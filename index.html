@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cookbook Club</title>
+<meta name="robots" content="noindex">
+<script>try{var t=localStorage.getItem("ci-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,300..900&family=Faculty+Glyphic&family=IBM+Plex+Mono:wght@400;600&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111214; --ink2:#55585e; --ink3:#9a9da3; --rule:#e3e4e7; --paper:#ffffff; --wash:#f3f4f6;
+    --hot:#ff876d; --hotwash:#ffece7; --on-hot:#111214;
+    --sans:"Archivo", system-ui, sans-serif; --mono:"IBM Plex Mono", ui-monospace, monospace;
+    --pad:20px; --on-ink:#ffffff; --ph:#c9cbd0; --sheet:#ffffff;
+    color-scheme:light;
+  }
+  /* dark: follows the phone unless the toggle forces a mode */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme=light]){
+      --ink:#eceef1; --ink2:#a3a7af; --ink3:#6d7179; --rule:#2b2d32; --paper:#121316; --wash:#1c1e22;
+      --hot:#ff876d; --hotwash:#3b211b; --on-ink:#121316; --ph:#3a3d43; --sheet:#1d1f23; color-scheme:dark;
+    }
+  }
+  :root[data-theme=dark]{
+    --ink:#eceef1; --ink2:#a3a7af; --ink3:#6d7179; --rule:#2b2d32; --paper:#121316; --wash:#1c1e22;
+    --hot:#ff876d; --hotwash:#3b211b; --on-ink:#121316; --ph:#3a3d43; --sheet:#1d1f23; color-scheme:dark;
+  }
+  :root[data-theme=dark] .ph, :root:not([data-theme=light]) .ph{outline:1px solid var(--rule);outline-offset:-1px}
+  @media (prefers-color-scheme: light){ :root:not([data-theme=dark]) .ph{outline:0} }
+  .themebtn{border:1px solid var(--rule);background:none;color:var(--ink2);width:30px;height:30px;padding:0;margin-left:12px;display:grid;place-items:center;flex:none}
+  .themebtn svg{width:18px;height:18px}
+  .brand{white-space:nowrap;color:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .mast{align-items:center}
+  @media (max-width:440px){ .mast .stats{display:none} }
+  .sheet{box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;-webkit-font-smoothing:antialiased}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 96px) env(safe-area-inset-left)}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer}
+  .wrap{max-width:760px;margin:0 auto;padding:0 var(--pad)}
+
+  header{padding-top:28px}
+  .mast{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .brand{font-weight:800;font-stretch:72%;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+  .brand b{color:var(--hot)}
+  .stats{font-family:var(--mono);font-size:12px;color:var(--ink2);white-space:nowrap}
+
+  .searchbox{position:relative;margin-top:22px}
+  .searchbox input{width:100%;border:0;border-bottom:3px solid var(--ink);padding:6px 40px 10px 0;font-size:clamp(26px,7vw,52px);font-weight:700;font-stretch:78%;letter-spacing:-.01em;background:transparent;outline:none;border-radius:0}
+  .searchbox input::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
+  .searchbox input::placeholder{color:var(--ph)}
+  .searchbox input:focus{border-bottom-color:var(--hot)}
+  .searchbox .clear{position:absolute;right:0;bottom:14px;border:0;background:var(--wash);width:30px;height:30px;border-radius:50%;font-size:18px;line-height:1;display:none}
+  .searchbox.has .clear{display:block}
+
+  nav.tabs{display:flex;gap:22px;margin-top:18px;border-bottom:1px solid var(--rule)}
+  nav.tabs button{border:0;background:none;padding:10px 0;font-weight:700;font-stretch:85%;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);border-bottom:3px solid transparent;margin-bottom:-1px}
+  nav.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
+
+  .note{font-size:14px;color:var(--ink2);margin:14px 0 0}
+  .banner{margin-top:14px;padding:10px 12px;background:var(--hotwash);font-size:14px;border-left:3px solid var(--hot)}
+
+  ul.list{list-style:none;margin:0;padding:0}
+  .row{display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:end;padding:14px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+  .row:active{background:var(--wash)}
+  .row .t{font-size:19px;font-weight:600;font-stretch:92%;line-height:1.2}
+  .row .t mark{background:none;color:var(--hot)}
+  .row .b{grid-column:1;font-size:13px;color:var(--ink2);letter-spacing:.01em}
+  .row .p{grid-row:1 / span 2;grid-column:2;font-family:var(--mono);font-weight:600;font-size:22px;text-align:right;align-self:center}
+  .row .p small{display:block;font-size:10px;font-weight:400;color:var(--ink3);letter-spacing:.1em}
+  .row .via{color:var(--hot)}
+  .row .mk{grid-column:1;font-family:var(--mono);font-size:11px;color:var(--ink2);margin-top:2px}
+  .hot{color:var(--hot)}
+  .stars{display:flex;gap:2px}
+  .stars button{border:0;background:none;font-size:28px;line-height:1;padding:2px 3px;color:var(--ink3);cursor:pointer}
+  .stars button.on{color:var(--hot)}
+  .stars button:disabled{cursor:default}
+  .rate-row{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
+  .rate-row > span{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);min-width:92px}
+  .rate-row.ask > span{color:var(--hot)}
+  .shelfseg{margin:16px 0 0;max-width:320px}
+  .lnk{border:0;background:none;padding:0;color:inherit;text-decoration:underline;text-underline-offset:3px;font:inherit;cursor:pointer}
+  .rp{padding:14px 0 30px}
+  .rp h1{font-weight:800;font-stretch:72%;font-size:clamp(36px,10vw,58px);line-height:.96;letter-spacing:-.01em;margin:10px 0 18px}
+  .where{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:stretch}
+  .pgbox{border:3px solid var(--ink);padding:8px 14px;font-family:var(--mono);font-weight:600;font-size:44px;line-height:1;text-align:center;display:flex;flex-direction:column;justify-content:center}
+  .pgbox small{font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--ink2);margin-bottom:4px}
+  .where .bk{display:flex;gap:12px;align-items:center;border:0;background:var(--wash);padding:10px;text-align:left;cursor:pointer}
+  .where .mini{width:46px;flex:none}
+  .where .mini .ph{padding:5px}.where .mini .ph b{font-size:7px}.where .mini .ph i{display:none}
+  .where b{display:block;font-weight:700;font-stretch:88%;font-size:16px;line-height:1.15}
+  .where i{display:block;font-style:normal;font-size:13px;color:var(--ink2);margin-top:2px}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 6px}
+  .acts button{display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--ink);background:var(--paper);padding:13px 10px;font-weight:700;font-size:15px}
+  .acts button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+  .acts button.done{background:var(--ink);color:var(--on-ink)}
+  .cookedline{font-family:var(--mono);font-size:12px;color:var(--ink2);margin:6px 0}
+  .rp section{margin-top:26px}
+  .rp h3{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;border-bottom:3px solid var(--ink);padding-bottom:6px;margin:0 0 10px}
+  .ing{list-style:none;padding:0;margin:0;columns:2;column-gap:24px}
+  .ing li{padding:7px 0;border-bottom:1px solid var(--rule);break-inside:avoid;font-size:16px}
+  @media (max-width:360px){.ing{columns:1}}
+  .tagset{display:flex;flex-wrap:wrap;gap:8px}
+  .tg{display:inline-flex;align-items:center;gap:4px;border:2px solid var(--ink);padding:5px 6px 5px 10px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+  .tg .lnk{text-decoration:none}
+  .tg .x{border:0;background:none;font-size:16px;line-height:1;color:var(--ink3);padding:0 2px;cursor:pointer}
+  .tg.g{border-style:dashed;border-color:var(--ink3);color:var(--ink2)}
+  .addtag{display:flex;gap:8px;margin-top:12px;align-items:flex-start}.tagin{position:relative;flex:1;min-width:0}.tagin .in{width:100%}
+  .tagsug{position:absolute;left:0;right:0;top:100%;z-index:20;margin:4px 0 0;padding:4px 0;list-style:none;background:var(--sheet,var(--bg));border:2px solid var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+  .tagsug li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 12px;font-size:15px;cursor:pointer}
+  .tagsug li b{font-weight:700}.tagsug li small{font-family:var(--mono);font-size:11px;opacity:.55}
+  .tagsug li.on{background:var(--hot);color:#111214}.tagsug li.new{border-top:1px solid var(--line,rgba(127,127,127,.3));font-size:14px}
+.addtag .in{flex:1;min-width:0;padding:8px 10px;font-size:15px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+  .chips span{font-size:13px;padding:4px 9px;border:1.5px solid var(--ink);font-weight:600}
+  .chips.guess span{border-style:dashed;border-color:var(--ink3);color:var(--ink2)}
+  .more{padding:14px 0;font-size:13px;color:var(--ink3);font-family:var(--mono)}
+
+  .empty{padding:44px 0 20px}
+  .empty h2{font-weight:800;font-stretch:70%;font-size:34px;line-height:1;margin:0 0 10px;letter-spacing:-.01em}
+  .empty p{color:var(--ink2);margin:0 0 18px;max-width:46ch;line-height:1.45}
+
+  .shelf .bk{display:grid;grid-template-columns:8px 1fr auto;gap:0 14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+  .shelf .spine{width:8px;height:44px;background:var(--ink)}
+  .shelf .bt{font-weight:700;font-stretch:85%;font-size:19px;line-height:1.15}
+  .shelf .ba{font-size:13px;color:var(--ink2)}
+  .shelf .bc{font-family:var(--mono);font-size:13px;color:var(--ink2)}
+
+  .shelfbar{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;font-family:var(--mono);font-size:12px;color:var(--ink2);letter-spacing:.06em;text-transform:uppercase}
+  .shelfbar select{border:0;background:none;font:inherit;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 14px;align-items:end;list-style:none;margin:0;padding:0 0 20px}
+  @media (min-width:620px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  .grid li{cursor:pointer;position:relative}
+  .grid li:active{transform:scale(.98)}
+  .cover{display:block;width:100%;box-shadow:0 1px 2px rgba(0,0,0,.12),0 6px 18px rgba(0,0,0,.10)}
+  img.cover{height:auto}
+  .ph{aspect-ratio:2/3;padding:10% 9%;display:flex;flex-direction:column;justify-content:space-between;color:#fff;overflow:hidden}
+  .ph b{font-weight:800;font-stretch:66%;text-transform:uppercase;line-height:.95;font-size:clamp(13px,3.9vw,20px);letter-spacing:-.005em;overflow-wrap:break-word;hyphens:auto;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+  .ph i{padding-right:24px;font-style:normal;font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ph.light{color:#111214}
+  .grid .ct{position:absolute;right:6px;bottom:6px;background:rgba(17,18,20,.82);color:#fff;font-family:var(--mono);font-size:11px;padding:2px 6px}
+  .bookhead{padding:18px 0 6px}
+  .hero{background:var(--wash);margin:0 calc(-1 * var(--pad));padding:8px var(--pad) 26px;position:relative}
+  .hero .back{display:block;margin-bottom:6px}
+  .hero .cv{width:46%;max-width:230px;margin:0 auto;position:relative}
+  .hero .cv.edit{cursor:pointer}
+  .hero .cv .addcv{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font-size:12px;font-weight:700;padding:5px 10px;white-space:nowrap}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+  .meta span{border:2px solid var(--ink);padding:5px 10px;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+  .cvrow{display:flex;gap:14px;align-items:center;margin:0 0 16px}
+  .cvrow .thumb{width:72px;flex:none}
+  .cvrow .btns{display:flex;flex-wrap:wrap;gap:8px}
+  .cvrow input,.isbnrow input[type=file]{display:none}
+  .isbnrow{display:flex;gap:8px}.isbnrow .in{flex:1;min-width:0}.isbnrow .btn{white-space:nowrap;display:flex;align-items:center}
+  .cvbox{position:fixed;inset:0;background:rgba(17,18,20,.72);z-index:30;display:none;align-items:center;justify-content:center;padding:20px}
+  .cvbox.on{display:flex}
+  .cvpanel{background:var(--sheet);padding:20px;width:100%;max-width:420px;max-height:92vh;overflow:auto}
+  .cvimg{display:block;max-width:100%;max-height:52vh;margin:0 auto;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+  .cvimg.dim{opacity:.45}
+  .cvrow .ph{padding:8px 7px}.cvrow .ph b{font-size:10px}.cvrow .ph i{font-size:7px}
+  .back{border:0;background:none;padding:6px 0;font-size:14px;color:var(--ink2)}
+  .bookhead h2{font-weight:800;font-stretch:72%;font-size:clamp(34px,9vw,48px);line-height:.98;margin:18px 0 6px;letter-spacing:-.01em}
+  .bookhead .ba{color:var(--ink2);font-size:14px}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+
+  .btn{border:2px solid var(--ink);background:var(--paper);padding:9px 14px;font-weight:700;font-size:14px;letter-spacing:.02em;border-radius:0}
+  .btn.solid{background:var(--ink);color:var(--on-ink)}
+  .btn.hot{background:var(--hot);border-color:var(--hot);color:var(--on-hot)}
+  .btn.ghost{border-color:var(--rule)}
+  .btn.danger{border-color:var(--hot);color:var(--hot)}
+  .btn:disabled{opacity:.4;cursor:default}
+
+  .fab{position:fixed;right:calc(var(--pad) + env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;border:0;background:#5a4df5;color:#ffffff;font-size:34px;line-height:1;box-shadow:0 6px 20px rgba(90,77,245,.38);display:none}
+  .fab.on{display:block}
+
+  /* sheets */
+  .scrim{position:fixed;inset:0;background:rgba(17,18,20,.42);display:none;z-index:10}
+  .scrim.on{display:block}
+  .sheet{position:fixed;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:var(--sheet);z-index:11;transform:translateY(105%);transition:transform .22s ease;padding:22px var(--pad) calc(24px + env(safe-area-inset-bottom))}
+  .sheet.on{transform:none}
+  @media (min-width:700px){.sheet{left:50%;right:auto;width:640px;margin-left:-320px}}
+  .sheet h3{margin:0 0 16px;font-weight:800;font-stretch:72%;font-size:28px;line-height:1.05;display:flex;justify-content:space-between;align-items:start;gap:10px}
+  .sheet h3 .x{border:0;background:var(--wash);width:34px;height:34px;border-radius:50%;font-size:20px;flex:none}
+  .f{display:block;margin:0 0 14px}
+  .f > span{display:block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+  .in{width:100%;border:2px solid var(--rule);padding:11px 12px;border-radius:0;background:var(--paper);font-size:17px;outline:none}
+  .in:focus{border-color:var(--ink)}
+  .two{display:grid;grid-template-columns:1fr 110px;gap:10px}
+  .menu button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:16px 0}
+  .menu button b{display:block;font-size:19px;font-weight:700;font-stretch:90%}
+  .menu button span{font-size:14px;color:var(--ink2)}
+  .seg{display:flex;border:2px solid var(--ink);margin-bottom:16px}
+  .seg button{flex:1;border:0;background:var(--paper);padding:9px;font-weight:700;font-size:14px}
+  .seg button[aria-pressed=true]{background:var(--ink);color:var(--on-ink)}
+  .thumbs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .thumbs img{width:64px;height:84px;object-fit:cover;border:1px solid var(--rule);display:block}
+  .thumbs .th{position:relative}
+  .thumbs .thx{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:2px solid var(--paper);background:var(--ink);color:var(--on-ink);font-size:15px;line-height:1;padding:0;cursor:pointer}
+  .thumbs .th.bad img{outline:3px solid #d93b2b;outline-offset:-3px;opacity:.7}
+  .thumbs .th span{position:absolute;left:0;right:0;bottom:0;background:#d93b2b;color:#fff;font-family:var(--mono);font-size:10px;text-align:center;padding:2px 0}
+  .sheet .closeask{position:sticky;top:-22px;z-index:3;margin:-22px calc(-1 * var(--pad)) 16px;padding:18px var(--pad);background:var(--sheet);border-bottom:3px solid var(--ink);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+  .sheet .closeask p{margin:0;font-size:15px;color:var(--ink2)}.sheet .closeask b{color:var(--ink);font-size:17px}
+  .sheet .closeask .actions{margin:12px 0 0}
+  .drop{display:block;border:2px dashed var(--rule);padding:22px;text-align:center;color:var(--ink2);font-size:15px;cursor:pointer}
+  .drop input{display:none}
+  .status{font-family:var(--mono);font-size:13px;color:var(--ink2);margin:10px 0;min-height:1.2em}
+  .err{color:var(--hot)}
+  .review{list-style:none;padding:0;margin:8px 0 14px}
+  .review li{display:grid;grid-template-columns:28px 1fr 74px 30px;gap:2px 6px;align-items:center;padding:6px 0 8px;border-bottom:1px solid var(--rule)}
+  .review .kw{grid-column:2 / span 3;font-size:13px !important;color:var(--ink2);padding:3px 6px !important}
+  .review .kw.guess{border:1px dashed var(--ink3) !important}
+  .review .tag{grid-column:2 / span 3;font-size:12px;color:var(--ink3);padding:0 6px}
+  .review li.dupe{opacity:.7}
+  .review input[type=text]{border:1px solid transparent;padding:6px;font-size:15px;width:100%;background:transparent;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+  .review input[type=text]:focus{border-color:var(--ink);outline:none;background:var(--paper)}
+  .review .pg{font-family:var(--mono);text-align:right}
+  .review .rm{border:0;background:none;color:var(--ink3);font-size:18px}
+  .review input[type=checkbox]{width:18px;height:18px;accent-color:var(--hot)}
+  .sticky{position:sticky;bottom:calc(-24px - env(safe-area-inset-bottom));background:var(--sheet);padding:12px 0 4px;border-top:1px solid var(--rule);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .confirm{margin-top:12px;padding:12px;border:2px solid var(--hot);display:none}
+  .confirm.on{display:block}
+  .confirm p{margin:0 0 10px;font-size:14px}
+  .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--on-ink);padding:10px 16px;font-size:14px;opacity:0;transition:.2s;z-index:20;pointer-events:none;white-space:nowrap}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  .hidden{display:none !important}
+  /* ---- type: Faculty Glyphic for titles, Anton for lesser headings, Archivo for everything else ---- */
+  :root{--display:"Faculty Glyphic", Georgia, serif; --head:"Anton", "Archivo", sans-serif}
+  .brand,.brand b{font-family:"Unbounded", var(--head);font-weight:600;font-stretch:normal;font-size:21px;letter-spacing:-.02em;text-transform:none}
+  .searchbox input{font-family:var(--display);font-weight:400;font-stretch:normal;font-size:clamp(24px,6.6vw,48px);letter-spacing:-.015em}
+  .rp h1{font-family:var(--display);font-weight:400;font-stretch:normal;font-size:clamp(32px,8.8vw,54px);line-height:1.02;letter-spacing:-.015em}
+  .bookhead h2{font-family:var(--display);font-weight:400;font-stretch:normal;font-size:clamp(30px,8vw,46px);line-height:1.04;letter-spacing:-.015em}
+  .empty h2,.sheet h3{font-family:var(--display);font-weight:400;font-stretch:normal;letter-spacing:-.01em}
+  nav.tabs button{font-family:var(--head);font-weight:400;font-stretch:normal;font-size:17px;letter-spacing:.05em}
+  .rp h3{font-family:var(--head);font-weight:400;font-size:16px;letter-spacing:.06em}
+  .rate-row > span,.f > span{font-family:var(--head);font-weight:400;font-size:14px;letter-spacing:.06em}
+  .meta span,.tg{font-family:var(--head);font-weight:400;font-size:14px;letter-spacing:.05em}
+  .ph b{font-family:var(--head);font-weight:400;font-stretch:normal;line-height:1.02;font-size:clamp(15px,4.4vw,23px);letter-spacing:.01em}
+  .cvrow .ph b{font-size:11px}.where .mini .ph b{font-size:8px}
+  .tg .lnk{text-transform:inherit;letter-spacing:inherit}
+  /* recipe hero photo */
+  .rhero{margin:0 calc(-1 * var(--pad)) 18px;min-height:340px;background:var(--wash) center/cover no-repeat;display:flex;flex-direction:column;justify-content:space-between;padding:12px var(--pad) 18px;position:relative}
+  .rhero::before{content:"";position:absolute;inset:0;pointer-events:none}
+  .rhero.on-dark{color:#fff}.rhero.on-dark::before{background:linear-gradient(to bottom,rgba(0,0,0,.35),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 45%,rgba(0,0,0,.6))}
+  .rhero.on-light{color:#111214}.rhero.on-light::before{background:linear-gradient(to bottom,rgba(255,255,255,.45),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 45%,rgba(255,255,255,.7))}
+  .rhero > *{position:relative}
+  .rhero .back{color:inherit;align-self:flex-start;font-weight:600}
+  .rhero h1{margin:0;color:inherit}
+  /* tags row */
+  .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;align-items:stretch}
+  .tagbtn{border:2px solid var(--ink);background:var(--paper);color:var(--ink);font-family:var(--head);font-size:15px;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;cursor:pointer}
+  .tagbtn span{font-family:var(--mono);font-size:11px;color:var(--ink2);margin-left:4px}
+  .course{background:var(--ink);color:var(--on-ink);font-family:var(--head);font-size:15px;letter-spacing:.05em;text-transform:uppercase;padding:8px 12px;display:flex;align-items:center}
+  .course.g{opacity:.55}
+  /* notes */
+  .note2{padding:10px 0;border-bottom:1px solid var(--rule)}
+  .note2 .who2{font-family:var(--mono);font-size:11px;color:var(--ink2);margin-bottom:4px;display:flex;gap:6px;align-items:center}
+  .note2.priv .who2{color:var(--hot)}
+  .note2 p{margin:0;font-size:16px;line-height:1.4;white-space:pre-wrap}
+  .note2 .x{border:0;background:none;color:var(--ink3);font-size:16px;cursor:pointer;margin-left:auto}
+  .compose{border:2px solid var(--ink);margin-top:12px}
+  .compose textarea{display:block;width:100%;border:0;padding:10px 12px;font:inherit;font-size:15px;min-height:70px;resize:vertical;background:var(--paper);color:var(--ink);outline:none}
+  .compose .bar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--rule);padding:6px 8px 6px 12px}
+  .clubf{margin:6px 0 4px}.clubf .f{margin-top:10px}
+  .clubyrs{display:flex;gap:0;margin-bottom:8px;border:2px solid var(--ink);width:max-content}
+  .clubyrs button{border:0;background:var(--paper);color:var(--ink);padding:8px 16px;font:600 15px var(--mono);cursor:pointer}
+  .clubyrs button+button{border-left:2px solid var(--ink)}
+  .clubmos{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .clubmos button{border:2px solid var(--rule);background:var(--paper);color:var(--ink);padding:11px 0;font-size:15px;font-weight:600;cursor:pointer}
+  .clubyrs button[aria-pressed=true],.clubmos button[aria-pressed=true]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+  .clubline{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:12px;letter-spacing:.02em;background:var(--hotwash);color:var(--ink);padding:3px 8px}
+  .grid li{position:relative}
+  .clubtag{position:absolute;top:-7px;right:-5px;z-index:1;background:var(--hot);color:#111214;font-family:var(--head);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;transform:rotate(4deg);box-shadow:0 2px 5px rgba(0,0,0,.18);pointer-events:none;white-space:nowrap}
+  .selfchk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)}
+  .selfchk input{width:18px;height:18px;accent-color:var(--hot)}
+  .selfchk.big{font-size:16px;margin-top:12px}
+  /* settings */
+  .settings{padding:14px 0 30px}.settings h2{font-family:var(--display);font-weight:400;font-size:34px;margin:8px 0 6px}
+  .settings h3{font-family:var(--head);font-weight:400;font-size:16px;letter-spacing:.06em;text-transform:uppercase;border-bottom:3px solid var(--ink);padding-bottom:6px;margin:22px 0 12px}
+  .settings .seg{max-width:360px}
+  /* cook flow */
+  .flow{position:fixed;inset:0;z-index:40;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .fbar{display:flex;align-items:center;gap:12px;padding:16px 20px 8px}
+  .fb{width:36px;height:36px;border:0;background:none;color:var(--ink);font-size:26px;line-height:1;cursor:pointer;flex:none}
+  .prog{flex:1;display:flex;gap:6px}.prog i{flex:1;height:4px;background:var(--rule)}.prog i.on{background:var(--hot)}
+  .fbody{flex:1;overflow:auto;padding:18px 20px;max-width:640px;width:100%;margin:0 auto}
+  .fbody h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.05;margin:6px 0 18px}
+  .fbody h4{font-family:var(--head);font-weight:400;font-size:16px;letter-spacing:.06em;text-transform:uppercase;margin:26px 0 10px}
+  .fsub{color:var(--ink2);margin:-8px 0 18px}
+  .yn{display:flex;gap:14px}.yn button{width:64px;height:64px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font-size:28px;cursor:pointer}
+  .yn button.on{background:var(--ink);color:var(--on-ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips button{border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:7px 12px;font-weight:600;font-size:14px;cursor:pointer}
+  .chips button.on{background:var(--ink);color:var(--on-ink)}
+  .pdrop{display:flex;align-items:center;justify-content:center;border:2px dashed var(--ink3);min-height:220px;cursor:pointer;text-align:center;color:var(--ink2);font-weight:600;overflow:hidden}
+  .pdrop.busy{opacity:.5}.pdrop span{font-size:15px;line-height:1.8}.pdrop img{display:block;width:100%;max-height:52vh;object-fit:cover}.pdrop input{display:none}
+  .stars.big button{font-size:42px}
+  .fbody textarea.in{min-height:120px;resize:vertical}
+  .fcta{padding:12px 20px 20px;max-width:640px;width:100%;margin:0 auto}
+  .btn.big{width:100%;padding:15px;font-size:17px}
+  .bookfind{align-items:stretch;flex-wrap:nowrap;margin-top:18px}
+  .bookfind > span{white-space:nowrap;display:flex;align-items:center}
+  .bq{flex:1;min-width:0;position:relative;display:flex}
+  .bq input{width:100%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:5px 30px 5px 10px;font-family:var(--sans);font-size:15px;border-radius:0;outline:none;-webkit-appearance:none}
+  .bq input::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
+  .bq input::placeholder{color:var(--ink3)}
+  .bq input:focus{border-color:var(--hot)}
+  .bqx{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--ink2);font-size:20px;line-height:1;padding:2px 6px;cursor:pointer}
+  .subnote{font-family:var(--mono);font-size:12px;color:var(--ink3);margin:6px 0 2px}
+
+  /* ---- meal plan ---- */
+  .acts button.wide{grid-column:1/-1;padding:11px 10px;font-size:14px}
+  .plan{padding:4px 0 90px}
+  .wkbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 4px}
+  .wkarrow{width:44px;height:44px;border:2px solid var(--ink);background:var(--paper);font-size:24px;line-height:1;cursor:pointer}
+  .wkt{text-align:center}.wkt b{display:block;font-family:var(--display);font-weight:400;font-size:24px}.wkt small,.wkt .lnk{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+  ol.days{list-style:none;margin:6px 0 0;padding:0}
+  .day{border-bottom:1px solid var(--rule);padding:12px 0}
+  .dh{display:flex;align-items:baseline;gap:10px}
+  .dn{font-family:var(--head);font-size:17px;letter-spacing:.06em;text-transform:uppercase;min-width:44px}
+  .dd{font-family:var(--mono);font-size:14px;color:var(--ink2)}
+  .tdy{font-family:var(--head);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--hot);color:var(--on-hot);padding:2px 7px}
+  .day.past .dn,.day.past .dd{color:var(--ink3)}
+  .dadd{margin-left:auto;width:34px;height:34px;border:2px solid var(--rule);background:none;font-size:20px;line-height:1;color:var(--ink2);cursor:pointer;align-self:center}
+  .day.today .dadd{border-color:var(--ink);color:var(--ink)}
+  ul.ents{list-style:none;margin:8px 0 0;padding:0 0 0 54px}
+  .ent{display:flex;align-items:flex-start;gap:8px;padding:7px 0}
+  .ent+.ent{border-top:1px dashed var(--rule)}
+  .eb{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;border:0;background:none;padding:0;text-align:left;color:inherit;cursor:pointer}
+  div.eb{cursor:default}
+  .et{font-family:var(--display);font-size:19px;line-height:1.2}.et.gone{color:var(--ink3);font-family:var(--sans);font-size:15px}
+  .es{font-size:13px;color:var(--ink2)}
+  .ent.skip .et{text-decoration:line-through;text-decoration-color:var(--ink3);color:var(--ink2)}
+  .emade{font-family:var(--mono);font-size:11px;color:var(--ink)}.emade.no{color:var(--ink3)}
+  .enote{font-size:15px;color:var(--ink2)}.enote.solo{color:var(--ink);font-style:italic}
+  .emenu{flex:none;border:0;background:none;color:var(--ink3);font-size:12px;letter-spacing:1px;padding:6px 2px 6px 8px;cursor:pointer}
+  .qchip{display:inline-block;font-family:var(--head);font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border:0}
+  .qchip.big{font-size:15px;padding:9px 13px;cursor:pointer;outline:2px solid transparent;outline-offset:2px}.qchip.big.on{outline-color:var(--ink)}
+  .qrow{display:flex;flex-wrap:wrap;gap:8px}
+  .sheet h4{font-family:var(--head);font-weight:400;font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin:22px 0 8px}
+  .plist{border-top:1px solid var(--rule)}
+  .prow{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:11px 0;color:inherit;cursor:pointer}
+  .prow .t{display:block;font-family:var(--display);font-size:18px}.prow .b{font-size:13px;color:var(--ink2)}
+  .dsel{display:flex;align-items:center;gap:12px}.dsel span{margin:0}.dsel .in{flex:1}
+  .nxf{border:2px solid var(--ink);padding:14px;margin-top:12px}
+  .daylist button.cur b{color:var(--ink3)}
+  .ask{border:2px solid var(--ink);padding:14px 16px;margin:16px 0 6px;background:var(--hotwash)}
+  .ask h3{font-family:var(--head);font-weight:400;font-size:16px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+  .askrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--rule)}
+  .ask h3+.askrow{border-top:0}
+  .askt b{display:block;font-family:var(--display);font-weight:400;font-size:19px}.askt small{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+  .askb{display:flex;gap:6px}.askb button{border:2px solid var(--ink);background:var(--paper);padding:7px 12px;font-weight:700;font-size:14px;cursor:pointer}
+  .askb button:first-child{background:var(--ink);color:var(--on-ink)}
+  .jump{margin-top:22px}.jump h3{font-family:var(--head);font-weight:400;font-size:16px;letter-spacing:.06em;text-transform:uppercase;border-bottom:3px solid var(--ink);padding-bottom:6px;margin:0}
+  .qedit{list-style:none;margin:0;padding:0}
+  .qedit li{display:flex;align-items:center;gap:8px;padding:6px 0}
+  .qedit input[type=color]{width:44px;height:44px;border:2px solid var(--ink);padding:2px;background:var(--paper);flex:none}
+  .qedit .in{flex:1;min-width:0;padding:9px 10px;font-size:16px}
+  .qbtn{width:40px;height:44px;border:2px solid var(--rule);background:none;font-size:18px;flex:none;cursor:pointer}.qbtn:disabled{opacity:.3}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mast">
+      <a class="brand" href="#" id="homeBtn" aria-label="Cookbook Club home">Cookbook <b>Club</b></a>
+      <div style="display:flex;align-items:center"><div class="stats" id="stats">Loading…</div><button class="themebtn" id="settingsBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
+    </div>
+    <div class="searchbox" id="sbox">
+      <input id="q" type="search" placeholder="What are we making?" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+      <button class="clear" id="clearq" aria-label="Clear search">×</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-search" aria-selected="true">Search</button>
+      <button role="tab" id="tab-shelf" aria-selected="false">Shelf</button>
+      <button role="tab" id="tab-plan" aria-selected="false">Plan</button>
+    </nav>
+    <div id="banner" class="banner hidden"></div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<button class="fab" id="fab" aria-label="Add">+</button>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/cc-port.js"></script>
+<script>
+(() => {
+  // ---------- state ----------
+  const S = { plan: new Map(), quick: null, recent: [], planWeek: null, names: new Map(), photos: new Map(), photoLoading: new Set(), myNotes: {}, uid: null, user: null, isOwner: false, covers: new Map(), shelfSort: "title", books: new Map(), loaded: false, view: "search", openBook: null, canWrite: true, db: null, sample: null, limits: null };
+  const $ = s => document.querySelector(s);
+  const main = $("#main"), q = $("#q");
+
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+  const splitKw = s => [...new Set(String(s || "").split(/[,;]/).map(x => x.trim().toLowerCase()).filter(Boolean))].slice(0, 12);
+  const recKey = t => [...new Set(norm(t).split(" ").filter(w => w && !["and","with","the","a","of","in"].includes(w)).map(stem))].sort().join(" ");
+  const rid = () => Math.random().toString(36).slice(2, 10);
+  const plural = (n, w, pl) => `${n.toLocaleString()} ${n === 1 ? w : (pl || w + "s")}`;
+
+  function toast(msg) {
+    const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("on"), 2200);
+  }
+  function banner(msg) { const b = $("#banner"); if (!msg) { b.classList.add("hidden"); return; } b.textContent = msg; b.classList.remove("hidden"); }
+
+  // ---------- data ----------
+  function allRecipes() {
+    const out = [];
+    for (const [id, b] of S.books) for (const r of (b.recipes || [])) out.push({ ...r, bookId: id, book: b });
+    return out;
+  }
+  function sortedBooks() { return [...S.books.entries()].sort((a, b) => (a[1].title || "").localeCompare(b[1].title || "")); }
+
+  // one write at a time per book doc
+  const queues = new Map();
+  function writeBook(id, mutate) {
+    const prev = queues.get(id) || Promise.resolve();
+    const next = prev.catch(() => {}).then(async () => {
+      const cur = S.books.get(id);
+      const body = cur ? JSON.parse(JSON.stringify(cur)) : { title: "", author: "", recipes: [], createdAt: Date.now() };
+      const res = mutate(body);
+      if (res === null) { await S.db.doc("books/" + id).delete(); S.books.delete(id); render(); return; }
+      body.updatedAt = Date.now();
+      if (JSON.stringify(body).length > 240000) throw { code: "too_big", message: "That book has too many entries to store in one record." };
+      S.books.set(id, body); render();
+      try { await S.db.doc("books/" + id).set(body); }
+      catch (e) { if (cur) S.books.set(id, cur); else S.books.delete(id); render(); throw e; }
+    });
+    queues.set(id, next);
+    return next.catch(e => { handleWriteErr(e); throw e; });
+  }
+  function handleWriteErr(e) {
+    if (e?.code === "invalid_argument") { S.canWrite = false; render(); banner("You can look things up, but this copy can't save changes. Ask the owner for Contributor access."); }
+    else if (e?.code === "quota_exceeded") banner("Storage is full. Remove a book you don't need to make room.");
+    else if (e?.code === "too_big") banner(e.message);
+    else banner("Couldn't save just now. Check your connection and try again.");
+  }
+  function newBookId() { return S.db.collection("books").doc().id; }
+
+  // ---------- search ----------
+  // crude singular form so "tomatoes" finds "tomato" and "squashes" finds "squash"
+  const stem = w => w.length > 4 && /(oes|ches|shes|xes|sses)$/.test(w) ? w.slice(0, -2) : (w.length > 3 && /[^s]s$/.test(w) ? w.slice(0, -1) : w);
+  const matchesWord = (word, term) => word.startsWith(term) || stem(word) === stem(term) || word.startsWith(stem(term));
+  function search(query, onlyBook) {
+    const nq = norm(query); if (!nq) return [];
+    const terms = nq.split(" ");
+    const hits = [];
+    for (const r of allRecipes()) {
+      if (onlyBook && r.bookId !== onlyBook) continue;
+      const nt = norm(r.t), titleWords = nt.split(" ");
+      const bookHay = norm(r.book.title) + " " + norm(r.book.author);
+      const kws = (r.k || []).map(norm).filter(Boolean);
+      const kwWords = kws.map(k => k.split(" "));
+      let score = 0, via = [], ok = true;
+      for (const t of terms) {
+        if (titleWords.some(w => matchesWord(w, t))) { score += 10; continue; }
+        const ki = kwWords.findIndex(ws => ws.some(w => matchesWord(w, t)));
+        if (ki > -1) { score += r.ki ? 3 : 7; via.push(r.k[ki]); continue; }
+        const tg = [...(r.tags || []), ...(r.tagsG || [])].find(x => norm(x).split(" ").some(w => matchesWord(w, t)));
+        if (tg) { score += (r.tags || []).includes(tg) ? 6 : 2; via.push("#" + tg); continue; }
+        const ig = (r.ing || []).find(x => norm(x).split(" ").some(w => matchesWord(w, t)));
+        if (ig) { score += 5; via.push(ig); continue; }
+        if (nt.includes(t)) { score += 4; continue; }
+        if (!onlyBook && bookHay.includes(t)) { score += 1; continue; }
+        ok = false; break;
+      }
+      if (!ok) continue;
+      if (nt === nq) score += 100;
+      if (nt.startsWith(nq)) score += 40;
+      hits.push({ r: via.length ? { ...r, via: [...new Set(via)] } : r, score });
+    }
+    hits.sort((a, b) => b.score - a.score || a.r.t.localeCompare(b.r.t));
+    return hits.map(h => h.r);
+  }
+  function highlight(text, query) {
+    const terms = norm(query).split(" ").filter(Boolean);
+    if (!terms.length) return esc(text);
+    // mark word starts that begin with a term (case/diacritic-insensitive)
+    return String(text).split(/(\s+)/).map(w => {
+      const nw = norm(w);
+      const t = terms.find(t => nw.startsWith(t));
+      if (!t) return esc(w);
+      // approximate: mark the first t.length letters
+      let count = 0, i = 0;
+      for (; i < w.length && count < t.length; i++) if (norm(w[i])) count++;
+      return `<mark>${esc(w.slice(0, i))}</mark>${esc(w.slice(i))}`;
+    }).join("");
+  }
+
+  // ---------- render ----------
+  function renderStats() {
+    if (!S.loaded) return;
+    const n = allRecipes().length;
+    $("#stats").textContent = `${plural(n, "recipe")} · ${plural(S.books.size, "book")}`;
+  }
+  function rowHTML(r, query, inBook) {
+    return `<li class="row" data-book="${esc(r.bookId)}" data-rid="${esc(r.id)}">
+      <div class="t">${query ? highlight(r.t, query) : esc(r.t)}</div>
+      <div class="b">${inBook ? `<span style="color:var(--ink3)">${esc((r.k || []).join(", "))}${r.ki && (r.k || []).length ? " (guess)" : ""}</span>` : esc(r.book.title)}${r.via ? ` <span class="via">· ${esc(r.via.join(", "))}${r.ki ? " (guess)" : ""}</span>` : ""}</div>
+      ${marks(r)}<div class="p"><small>PAGE</small>${esc(r.p || "?")}</div></li>`;
+  }
+  function marks(r) {
+    const m = [];
+    if (r.rate) m.push(`<span class="hot">${"★".repeat(r.rate)}</span>`);
+    if (r.fav) m.push("Bookmarked");
+    if ((r.cooked || []).length) m.push(`Cooked ${r.cooked.length}×`);
+    return m.length ? `<div class="mk">${m.join(" · ")}</div>` : "";
+  }
+  const starsHTML = (v, act, label) => `<div class="stars" role="group" aria-label="${label}">${[1, 2, 3, 4, 5].map(n =>
+    `<button type="button" data-act="${act}" data-v="${n}" aria-label="${n} star${n > 1 ? "s" : ""}" class="${n <= (v || 0) ? "on" : ""}" ${S.canWrite ? "" : "disabled"}>${n <= (v || 0) ? "★" : "☆"}</button>`).join("")}</div>`;
+  const fmtDate = ts => new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric", year: new Date(ts).getFullYear() === new Date().getFullYear() ? undefined : "numeric" });
+  function getRecipe(bookId, id) { const b = S.books.get(bookId); return b ? (b.recipes || []).find(r => r.id === id) : null; }
+  function updRecipe(bookId, id, fn) { return writeBook(bookId, b => { const r = (b.recipes || []).find(x => x.id === id); if (r) fn(r); }).catch(() => {}); }
+  function go(view, extra = {}) {
+    if (view === "recipe") { S.back = { view: S.view, openBook: S.openBook }; recordView(extra.openBook || S.openBook, extra.openRecipe || S.openRecipe); }
+    Object.assign(S, { view }, extra); render(); window.scrollTo(0, 0);
+  }
+  function render() {
+    renderStats();
+    $("#fab").classList.toggle("on", S.loaded && S.canWrite && !!S.db && !["recipe", "settings"].includes(S.view));
+    $("#tab-search").setAttribute("aria-selected", S.view === "search");
+    const fromPlan = S.view === "recipe" && S.back?.view === "plan";
+    $("#tab-shelf").setAttribute("aria-selected", !["search", "settings", "plan"].includes(S.view) && !fromPlan);
+    $("#tab-plan").setAttribute("aria-selected", S.view === "plan" || (S.view === "recipe" && S.back?.view === "plan"));
+    $("#sbox").classList.toggle("has", !!q.value);
+
+    if (S.view === "settings") { renderSettings(); return; }
+    if (!S.loaded) { main.innerHTML = `<p class="note">Opening the shelf…</p>`; return; }
+    if (S.view === "plan") { renderPlan(); return; }
+
+    if (S.books.size === 0) {
+      main.innerHTML = `<div class="empty"><h2>The shelf is empty.</h2>
+        <p>Start with one book. Photograph its contents page or the recipe index at the back and the recipes get filled in for you, or type a few in by hand.</p>
+        ${S.canWrite ? `<div class="actions"><button class="btn hot" data-act="import">Import a book from photos</button><button class="btn" data-act="add">Add one recipe</button></div>` : ""}</div>`;
+      return;
+    }
+
+    if (S.view === "search") {
+      const query = q.value.trim();
+      if (!query) {
+        main.innerHTML = asksHTML(2) + `<p class="note"><span style="font-family:var(--mono);font-size:12px;color:var(--ink3)">${plural(allRecipes().length, "recipe")} · ${plural(S.books.size, "book")}</span><br>Type a recipe, an ingredient you have on hand, or a book. Every word has to match, so “squash sage” narrows it down.</p>` + jumpHTML();
+        return;
+      }
+      const hits = search(query);
+      if (!hits.length) {
+        main.innerHTML = `<div class="empty"><p>Nothing on the shelf matches “${esc(query)}”.</p>${S.canWrite ? `<button class="btn" data-act="add" data-prefill="${esc(query)}">Add “${esc(query)}”</button>` : ""}</div>`;
+        return;
+      }
+      const shown = hits.slice(0, 150);
+      main.innerHTML = `<ul class="list">${shown.map(r => rowHTML(r, query)).join("")}</ul>` +
+        (hits.length > shown.length ? `<div class="more">+ ${hits.length - shown.length} more. Add another word to narrow it.</div>` : "");
+      return;
+    }
+
+    if (S.view === "recipe") { if (renderRecipe()) return; S.view = "shelf"; }
+
+    if (S.view === "book" && S.books.has(S.openBook)) {
+      const b = S.books.get(S.openBook);
+      const recs = [...(b.recipes || [])].sort((x, y) => pageNum(x.p) - pageNum(y.p) || x.t.localeCompare(y.t));
+      const kwN = recs.filter(r => (r.k || []).length).length;
+      const hasCv = S.covers.has(S.openBook);
+      main.innerHTML = `<div class="bookhead"><div class="hero"><button class="back" data-act="shelf">← Shelf</button>
+        <div class="cv ${S.canWrite ? "edit" : ""}" ${S.canWrite ? `data-act="cover" data-book="${esc(S.openBook)}"` : ""}>${coverHTML(S.openBook, b)}${!hasCv && S.canWrite ? `<span class="addcv">+ Add cover photo</span>` : ""}</div></div>
+        <h2>${esc(b.title)}</h2><div class="ba">${b.author ? "by " + esc(b.author) : ""}</div>
+        ${b.club ? `<div class="clubline">${esc(clubLabel(b.club))}</div>` : ""}
+        <div class="rate-row"><span>Our rating</span>${starsHTML(b.rating, "rate-book", "Rate this book")}</div>
+        ${S.canWrite ? `<div class="actions"><button class="btn hot" data-act="import" data-book="${esc(S.openBook)}">Add pages from photos</button>
+          <button class="btn" data-act="add" data-book="${esc(S.openBook)}">Add a recipe</button>
+          ${canSee() && recs.length ? `<button class="btn ghost" data-act="suggest-tags" data-book="${esc(S.openBook)}">Suggest tags</button>` : ""}
+          <button class="btn ghost" data-act="editbook" data-book="${esc(S.openBook)}">Edit book</button></div>` : ""}
+        <div class="meta bookfind"><span>${plural(recs.length, "recipe")}</span>
+          ${recs.length ? `<label class="bq"><input id="bq" type="search" placeholder="Search this book" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" value="${esc(S.bookQ || "")}"><button type="button" class="bqx ${S.bookQ ? "" : "hidden"}" data-act="bq-clear" aria-label="Clear">×</button></label>` : ""}</div>
+        ${kwN ? `<div class="subnote">${kwN} with ingredients</div>` : ""}
+        <div class="status" id="bkst"></div></div>
+        <div id="booklist">${bookListHTML(b, recs)}</div>`;
+      const bq = main.querySelector("#bq");
+      if (bq) {
+        bq.oninput = () => { S.bookQ = bq.value; main.querySelector(".bqx").classList.toggle("hidden", !bq.value); main.querySelector("#booklist").innerHTML = bookListHTML(b, recs); };
+        // a live update from the other phone re-renders the page: keep typing where it was
+        if (S.bookQFocus) { bq.focus(); const n = bq.value.length; try { bq.setSelectionRange(n, n); } catch {} }
+        bq.onfocus = () => { S.bookQFocus = true; }; bq.onblur = () => { S.bookQFocus = false; };
+      }
+      return;
+    }
+
+    S.view = "shelf";
+    $("#tab-shelf").setAttribute("aria-selected", true); $("#tab-search").setAttribute("aria-selected", false);
+    const sorts = { title: "A to Z", author: "Author", recent: "Recently added", most: "Most recipes" };
+    let list = sortedBooks();
+    if (S.shelfSort === "author") list.sort((a, b) => lastName(a[1].author).localeCompare(lastName(b[1].author)) || a[1].title.localeCompare(b[1].title));
+    if (S.shelfSort === "recent") list.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+    if (S.shelfSort === "most") list.sort((a, b) => (b[1].recipes || []).length - (a[1].recipes || []).length);
+    const seg = `<div class="seg shelfseg"><button type="button" data-act="mode" data-v="books" aria-pressed="${S.shelfMode !== "saved"}">Books</button><button type="button" data-act="mode" data-v="saved" aria-pressed="${S.shelfMode === "saved"}">Bookmarks</button></div>`;
+    if (S.shelfMode === "saved") {
+      const saved = allRecipes().filter(r => r.fav).sort((a, b) => a.t.localeCompare(b.t));
+      main.innerHTML = seg + (saved.length ? `<ul class="list">${saved.map(r => rowHTML(r, "")).join("")}</ul>` : `<p class="note">Nothing bookmarked yet. Open any recipe and tap Bookmark.</p>`);
+      return;
+    }
+    main.innerHTML = seg + `<div class="shelfbar"><span>${plural(S.books.size, "book")}</span>
+      <select id="sortsel" aria-label="Sort">${Object.entries(sorts).map(([k, v]) => `<option value="${k}" ${k === S.shelfSort ? "selected" : ""}>${v}</option>`).join("")}</select></div>
+      <ul class="grid">${list.map(([id, b]) => `<li data-open="${esc(id)}" aria-label="${esc(b.title)}">${coverHTML(id, b)}<span class="ct">${(b.recipes || []).length}</span>${b.club ? `<span class="clubtag">${esc(clubShort(b.club))}</span>` : ""}</li>`).join("")}</ul>`;
+    main.querySelector("#sortsel").onchange = e => { S.shelfSort = e.target.value; try { localStorage.setItem("ci-sort", S.shelfSort); } catch {} render(); };
+  }
+  const COURSES = ["breakfast", "brunch", "appetizer", "snack", "soup", "salad", "main", "side", "dessert", "baking", "bread", "drink", "sauce"];
+  const TAGS = ["breakfast", "brunch", "appetizer", "snack", "soup", "salad", "main", "side", "dessert", "baking", "bread", "drink", "sauce",
+    "vegetarian", "vegan", "pescatarian", "gluten-free", "dairy-free", "weeknight", "make-ahead", "entertaining", "one-pot", "grilling"];
+  // Ranks tags against what's typed: exact, then starts-with, then a word inside starts-with, then contains.
+  // Ties go to tags used on more recipes, then shorter ones.
+  function tagMatches(q, have) {
+    const n = new Map(); for (const t of TAGS) n.set(t, 0);
+    for (const x of allRecipes()) (x.tags || []).forEach(t => n.set(t, (n.get(t) || 0) + 1));
+    const out = [];
+    for (const [t, c] of n) {
+      if (have.includes(t)) continue;
+      const rank = t === q ? 0 : t.startsWith(q) ? 1 : t.split(/[\s-]+/).some(w => w.startsWith(q)) ? 2 : t.includes(q) ? 3 : -1;
+      if (rank >= 0) out.push({ t, n: c, rank });
+    }
+    return out.sort((a, b) => a.rank - b.rank || b.n - a.n || a.t.length - b.t.length || a.t.localeCompare(b.t)).slice(0, 6);
+  }
+  function hlMatch(t, q) { const i = t.indexOf(q); return i < 0 ? esc(t) : esc(t.slice(0, i)) + "<b>" + esc(t.slice(i, i + q.length)) + "</b>" + esc(t.slice(i + q.length)); }
+  function allTags() { const set = new Set(TAGS); for (const r of allRecipes()) (r.tags || []).forEach(t => set.add(t)); return [...set]; }
+  const cap = t => String(t).replace(/(^|[\s-])\S/g, m => m.toUpperCase());
+  function authorName(id) { if (id && id === S.uid) return "You"; return (S.names.get(id) || "").split(" ")[0] || "Someone"; }
+  async function loadNames(ids) {
+    const need = ids.filter(id => id && !S.names.has(id)); if (!need.length || !S.user?.profiles) return;
+    try { const ps = await S.user.profiles(need); let got = false; for (const id of need) { const n = ps?.[id]?.name || ""; S.names.set(id, n); if (n) got = true; } if (got) render(); } catch {}
+  }
+  async function loadPhoto(id) {
+    if (S.photoLoading.has(id)) return; S.photoLoading.add(id);
+    try { const d = await S.db.doc("photos/" + id).get(); const src = d.exists ? String(d.data().src || "") : "";
+      if (/^data:image\/(jpeg|png|webp);base64,/.test(src)) { S.photos.set(id, src); if (S.view === "recipe" && S.openRecipe === id) render(); } }
+    catch {} finally { S.photoLoading.delete(id); }
+  }
+  function renderRecipe() {
+    const r = getRecipe(S.openBook, S.openRecipe); if (!r) return false;
+    const b = S.books.get(S.openBook), w = S.canWrite;
+    const cooked = r.cooked || [], conf = r.tags || [], guess = (r.tagsG || []).filter(t => !conf.includes(t));
+    const backLbl = S.back?.view === "plan" ? "← Plan" : S.back?.view === "search" ? (q.value.trim() ? "← Results" : "← Search") : S.back?.view === "shelf" ? "← Bookmarks" : "← " + esc(b.title);
+    const courses = conf.filter(t => COURSES.includes(t)), gCourses = courses.length ? [] : guess.filter(t => COURSES.includes(t));
+    const shared = r.notes || [], mine = (S.myNotes[r.id] || []);
+    loadNames([...new Set(shared.map(n => n.by))]);
+    let hero;
+    if (r.ph) {
+      const src = S.photos.get(r.id); if (!src) loadPhoto(r.id);
+      hero = `<div class="rhero ${r.tone === "light" ? "on-light" : "on-dark"}" ${src ? `style="background-image:url('${src}')"` : ""}>
+        <button class="back" data-act="back">${backLbl}</button><h1>${esc(r.t)}</h1></div>`;
+    } else hero = `<button class="back" data-act="back">${backLbl}</button><h1>${esc(r.t)}</h1>`;
+    const notesHTML = [...shared.map(n => ({ ...n, priv: false })), ...mine.map(n => ({ ...n, priv: true, by: S.uid }))].sort((x, y) => x.at - y.at).map(n =>
+      `<div class="note2 ${n.priv ? "priv" : ""}"><div class="who2">${esc(authorName(n.by))} · ${fmtDate(n.at)}${n.priv ? " · note to self" : ""}${w && (n.by === S.uid || S.isOwner) ? ` <button class="x" data-act="note-rm" data-v="${esc(n.id)}" data-priv="${n.priv ? 1 : 0}" aria-label="Delete note">×</button>` : ""}</div><p>${esc(n.text)}</p></div>`).join("");
+    main.innerHTML = `<article class="rp">
+      ${hero}
+      <div class="where">
+        <div class="pgbox"><small>PAGE</small>${esc(r.p || "?")}</div>
+        <button class="bk" data-act="openbook"><span class="mini">${coverHTML(S.openBook, b)}</span><span><b>${esc(b.title)}</b><i>${esc(b.author || "")}</i></span></button>
+      </div>
+      ${r.serves || r.time ? `<div class="meta">${r.serves ? `<span>Serves ${esc(r.serves)}</span>` : ""}${r.time ? `<span>${esc(r.time)}</span>` : ""}</div>` : ""}
+      ${w ? `<div class="acts">
+        <button data-act="cooked" class="${cooked.length ? "done" : ""}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>${cooked.length ? "Cooked it again" : "Mark as cooked"}</button>
+        <button data-act="fav" class="${r.fav ? "done" : ""}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4.5L6 21z" ${r.fav ? 'fill="currentColor"' : ""}/></svg>${r.fav ? "Bookmarked" : "Bookmark"}</button>
+        <button data-act="plan-recipe" class="wide"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>${(() => { const n = planAll().filter(e => e.kind === "recipe" && e.b === S.openBook && e.r === r.id && e.day >= todayKey()).sort((a, b) => a.day.localeCompare(b.day))[0]; return n ? "On the plan for " + esc(dayLong(n.day)) : "Add to meal plan"; })()}</button>
+      </div>` : ""}
+      <div class="tagrow">${[...courses.map(c => `<span class="course">${esc(cap(c))}</span>`), ...gCourses.map(c => `<span class="course g" title="Suggested">${esc(cap(c))}?</span>`)].join("")}
+        <button class="tagbtn" data-act="to-tags"># Tags${conf.length + guess.length ? ` <span>${conf.length + guess.length}</span>` : ""}</button></div>
+      ${cooked.length ? `<p class="cookedline">Cooked ${cooked.length}× · last ${fmtDate(cooked[cooked.length - 1])}${r.again === true ? " · would make again" : r.again === false ? " · wouldn't make again" : ""}${w ? ` · <button class="lnk" data-act="uncook">undo</button>` : ""}</p>` : ""}
+      <div class="rate-row ${cooked.length && !r.rate ? "ask" : ""}"><span>${cooked.length && !r.rate ? "How was it?" : "Our rating"}</span>${starsHTML(r.rate, "rate", "Rate this recipe")}</div>
+
+      <section><h3>Notes</h3>
+        ${notesHTML || `<p class="note" style="margin-top:0">No notes yet.</p>`}
+        ${w ? `<form class="compose" data-act-form="note"><textarea name="text" placeholder="Add a note: tips, swaps, what you'd change" maxlength="2000"></textarea>
+          <div class="bar">${S.uid ? `<label class="selfchk"><input type="checkbox" name="self"> Note to self</label>` : "<span></span>"}<button class="btn solid" type="submit">Add note</button></div></form>` : ""}
+      </section>
+
+      <section><h3>Ingredients</h3>
+        ${(r.ing || []).length ? `<ul class="ing">${r.ing.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`
+          : `${(r.k || []).length ? `<p class="note" style="margin-top:0">Main ingredients${r.ki ? ", guessed from the title" : " from the book's index"}:</p><ul class="ing">${r.k.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="note" style="margin-top:0">No ingredients yet.</p>`}`}
+        ${w && canSee() ? `<div class="actions"><button class="btn ${(r.ing || []).length ? "ghost" : "hot"}" data-act="recipe-photo">${(r.ing || []).length ? "Re-read the recipe page" : "Photograph the recipe page for the full list"}</button></div><div class="status" id="rpst"></div>` : ""}
+      </section>
+
+      <section id="tags"><h3>Tags</h3>
+        <div class="tagset">
+          ${conf.map(t => `<span class="tg"><button class="lnk" data-act="tag-go" data-v="${esc(t)}">${esc(t)}</button>${w ? `<button class="x" data-act="tag-rm" data-v="${esc(t)}" aria-label="Remove ${esc(t)}">×</button>` : ""}</span>`).join("")}
+          ${guess.map(t => `<span class="tg g">${w ? `<button class="lnk" data-act="tag-ok" data-v="${esc(t)}" title="Tap to confirm">${esc(t)} ✓</button><button class="x" data-act="tag-rm" data-v="${esc(t)}" aria-label="Remove ${esc(t)}">×</button>` : esc(t)}</span>`).join("")}
+          ${!conf.length && !guess.length ? `<span class="note" style="margin:0">None yet.</span>` : ""}
+        </div>
+        ${guess.length && w ? `<p class="note">Dashed tags are suggestions. Tap one to confirm it, or × to drop it.</p>` : ""}
+        ${w ? `<form class="addtag" data-act-form="addtag"><div class="tagin"><input class="in" name="tag" placeholder="Add a tag" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="tagsug" aria-autocomplete="list"><ul class="tagsug" id="tagsug" role="listbox" hidden></ul></div><button class="btn" type="submit">Add</button></form>` : ""}
+      </section>
+      ${w ? `<p><button class="lnk" data-act="editrecipe">Edit title, page or main ingredients</button>${r.ph ? ` · <button class="lnk" data-act="photo-rm">Remove meal photo</button>` : ""}</p>` : ""}
+    </article>`;
+    const tagForm = main.querySelector("[data-act-form=addtag]");
+    if (tagForm) {
+      const inp = tagForm.tag, ul = tagForm.querySelector(".tagsug");
+      let items = [], hi = 0;
+      const addTag = v => {
+        v = String(v || "").trim().toLowerCase(); if (!v) return;
+        S.tagRefocus = Date.now();
+        updRecipe(S.openBook, r.id, x => { x.tags = [...new Set([...(x.tags || []), v])]; x.tagsG = (x.tagsG || []).filter(t => t !== v); x.tagsX = (x.tagsX || []).filter(t => t !== v); });
+      };
+      const paint = () => {
+        const q = inp.value.trim().toLowerCase();
+        items = q ? tagMatches(q, r.tags || []) : [];
+        if (q && !items.some(i => i.t === q)) items.push({ t: q, isNew: true });
+        hi = Math.min(hi, Math.max(items.length - 1, 0));
+        ul.hidden = !items.length; inp.setAttribute("aria-expanded", String(!!items.length));
+        ul.innerHTML = items.map((it, i) => `<li role="option" id="ts${i}" aria-selected="${i === hi}" data-i="${i}" class="${i === hi ? "on" : ""}${it.isNew ? " new" : ""}"><span>${it.isNew ? `Add new tag “<b>${esc(it.t)}</b>”` : hlMatch(it.t, q)}</span>${!it.isNew && it.n ? `<small>${it.n} recipe${it.n === 1 ? "" : "s"}</small>` : ""}</li>`).join("");
+        inp.setAttribute("aria-activedescendant", items.length ? "ts" + hi : "");
+        if (items.length) ul.scrollIntoView({ block: "nearest" });
+      };
+      inp.addEventListener("input", () => { hi = 0; paint(); });
+      inp.addEventListener("keydown", e => {
+        if (ul.hidden) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); hi = (hi + 1) % items.length; paint(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); hi = (hi - 1 + items.length) % items.length; paint(); }
+        else if (e.key === "Escape") { ul.hidden = true; inp.setAttribute("aria-expanded", "false"); }
+      });
+      inp.addEventListener("blur", () => setTimeout(() => { ul.hidden = true; }, 120));
+      inp.addEventListener("focus", () => { if (inp.value.trim()) paint(); });
+      ul.addEventListener("pointerdown", e => e.preventDefault());
+      ul.addEventListener("click", e => { const li = e.target.closest("li"); if (li) addTag(items[+li.dataset.i].t); });
+      tagForm.addEventListener("submit", e => { e.preventDefault(); addTag(!ul.hidden && items[hi] ? items[hi].t : inp.value); });
+      if (Date.now() - (S.tagRefocus || 0) < 1500) inp.focus({ preventScroll: true });
+    }
+    main.querySelector("[data-act-form=note]")?.addEventListener("submit", e => {
+      e.preventDefault(); const text = String(e.target.text.value || "").trim(); if (!text) return;
+      addNote(S.openBook, r.id, text, !!e.target.self?.checked).then(() => toast("Note added"));
+    });
+    return true;
+  }
+
+  // ---------- notes: shared ones live on the recipe, notes to self in your private space ----------
+  async function addNote(bookId, rid, text, self) {
+    const n = { id: rid8(), at: Date.now(), text: text.slice(0, 2000) };
+    if (self && S.uid) {
+      const next = JSON.parse(JSON.stringify(S.myNotes)); (next[rid] = next[rid] || []).push({ ...n, book: bookId });
+      S.myNotes = next; render();
+      try { await S.db.doc(`data/users/${S.uid}/notes`).set({ r: next }); } catch (e) { handleWriteErr(e); }
+    } else await updRecipe(bookId, rid, x => { x.notes = [...(x.notes || []), { ...n, by: S.uid || "" }].slice(-200); });
+  }
+  async function removeNote(bookId, rid, nid, priv) {
+    if (priv) {
+      const next = JSON.parse(JSON.stringify(S.myNotes)); next[rid] = (next[rid] || []).filter(n => n.id !== nid); if (!next[rid].length) delete next[rid];
+      S.myNotes = next; render();
+      try { await S.db.doc(`data/users/${S.uid}/notes`).set({ r: next }); } catch (e) { handleWriteErr(e); }
+    } else await updRecipe(bookId, rid, x => { x.notes = (x.notes || []).filter(n => n.id !== nid); });
+  }
+  const rid8 = () => Math.random().toString(36).slice(2, 10);
+
+  // ---------- meal photos: one per recipe, stored on its own so the shelf stays light ----------
+  async function mealPhoto(file) {
+    const bmp = await loadBitmap(file);
+    const sc = Math.min(1, 1000 / bmp.width);
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    const x = c.getContext("2d"); x.drawImage(bmp, 0, 0, c.width, c.height);
+    // how bright is the lower part of the frame, where the title sits?
+    const y0 = Math.floor(c.height * 0.55), px = x.getImageData(0, y0, c.width, c.height - y0).data;
+    let sum = 0, n = 0; for (let i = 0; i < px.length; i += 16) { sum += 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]; n++; }
+    const tone = sum / n / 255 > 0.58 ? "light" : "dark";
+    let q = 0.78, url = c.toDataURL("image/jpeg", q);
+    while (url.length > 190000 && q > 0.35) { q -= 0.08; url = c.toDataURL("image/jpeg", q); }
+    return { src: url, tone };
+  }
+  async function saveMealPhoto(bookId, rid, ph) {
+    S.photos.set(rid, ph.src);
+    await S.db.doc("photos/" + rid).set({ src: ph.src, book: bookId, at: Date.now(), by: S.uid || "" });
+    await updRecipe(bookId, rid, x => { x.ph = true; x.tone = ph.tone; });
+  }
+
+  // ---------- Mark as cooked: three full-screen steps ----------
+  function openCookFlow(bookId, rid, at) {
+    const r = getRecipe(bookId, rid); if (!r) return;
+    updRecipe(bookId, rid, x => { x.cooked = [...(x.cooked || []), at || Date.now()].sort((a, b) => a - b).slice(-50); });
+    const st = { step: 0, again: null, tags: new Set(r.tags || []), photo: null, rate: r.rate || 0, note: "", self: false, busy: false };
+    const el = document.createElement("div"); el.className = "flow"; document.body.append(el);
+    const close = () => { el.remove(); document.body.style.overflow = ""; };
+    document.body.style.overflow = "hidden";
+    const bar = () => `<div class="fbar">${st.step ? `<button class="fb" data-f="back" aria-label="Back">←</button>` : `<span class="fb"></span>`}
+      <div class="prog">${[0, 1, 2].map(i => `<i class="${i <= st.step ? "on" : ""}"></i>`).join("")}</div><button class="fb" data-f="close" aria-label="Close">×</button></div>`;
+    const draw = () => {
+      let body = "", cta = "";
+      if (st.step === 0) {
+        body = `<h2>Would you make this again?</h2>
+          <div class="yn"><button data-f="yes" class="${st.again === true ? "on" : ""}" aria-label="Yes">✓</button><button data-f="no" class="${st.again === false ? "on" : ""}" aria-label="No">×</button></div>
+          <h4>How would you describe it?</h4>
+          <div class="chips">${TAGS.map(t => `<button data-f="tag" data-v="${esc(t)}" class="${st.tags.has(t) ? "on" : ""}">${esc(cap(t))}</button>`).join("")}</div>`;
+        cta = `<button class="btn solid big" data-f="next">Next</button>`;
+      } else if (st.step === 1) {
+        body = `<h2>Add a photo</h2><p class="fsub">Remember how it turned out. It shows at the top of the recipe.</p>
+          <label class="pdrop">${st.photo ? `<img src="${st.photo.src}" alt="">` : `<span>📷<br>Add a photo</span>`}<input type="file" accept="image/*"></label>
+          ${st.photo ? `<button class="lnk" data-f="nophoto">Remove photo</button>` : ""}`;
+        cta = `<button class="btn solid big" data-f="next">${st.photo ? "Next" : "Skip"}</button>`;
+      } else {
+        body = `<h2>How did it turn out?</h2>
+          <div class="stars big">${[1, 2, 3, 4, 5].map(n => `<button data-f="rate" data-v="${n}" class="${n <= st.rate ? "on" : ""}">${n <= st.rate ? "★" : "☆"}</button>`).join("")}</div>
+          <h4>Add a note</h4><textarea class="in" rows="5" maxlength="2000" placeholder="Tips, swaps, what you'd change next time">${esc(st.note)}</textarea>
+          ${S.uid ? `<label class="selfchk big"><input type="checkbox" ${st.self ? "checked" : ""}> Note to self (only you see it)</label>` : ""}
+          <div class="status fst"></div>`;
+        cta = `<button class="btn solid big" data-f="done" ${st.busy ? "disabled" : ""}>${st.busy ? "Saving…" : "Done"}</button>`;
+      }
+      el.innerHTML = `${bar()}<div class="fbody">${body}</div><div class="fcta">${cta}</div>`;
+      const ta = el.querySelector("textarea"); if (ta) ta.oninput = () => { st.note = ta.value; };
+      const cb = el.querySelector(".selfchk input"); if (cb) cb.onchange = () => { st.self = cb.checked; };
+      const fi = el.querySelector(".pdrop input"); if (fi) fi.onchange = async () => {
+        const f = fi.files[0]; if (!f) return; el.querySelector(".pdrop").classList.add("busy");
+        try { st.photo = await mealPhoto(f); } catch { toast("Couldn't open that photo"); } draw(); };
+    };
+    el.onclick = async e => {
+      const t = e.target.closest("[data-f]"); if (!t) return; const f = t.dataset.f;
+      if (f === "close") { close(); toast("Marked as cooked"); return; }
+      if (f === "back") { st.step--; draw(); return; }
+      if (f === "yes") st.again = st.again === true ? null : true;
+      if (f === "no") st.again = st.again === false ? null : false;
+      if (f === "tag") { const v = t.dataset.v; st.tags.has(v) ? st.tags.delete(v) : st.tags.add(v); }
+      if (f === "nophoto") st.photo = null;
+      if (f === "rate") { const v = +t.dataset.v; st.rate = st.rate === v ? 0 : v; }
+      if (f === "next") st.step++;
+      if (f === "done") {
+        st.busy = true; draw();
+        try {
+          if (st.photo) await saveMealPhoto(bookId, rid, st.photo);
+          const tags = [...st.tags];
+          await updRecipe(bookId, rid, x => {
+            if (st.again !== null) x.again = st.again;
+            if (st.rate) x.rate = st.rate;
+            const prev = new Set(x.tags || []);
+            x.tags = tags; x.tagsG = (x.tagsG || []).filter(g => !st.tags.has(g));
+            x.tagsX = [...new Set([...(x.tagsX || []), ...[...prev].filter(p => !st.tags.has(p))])];
+          });
+          if (st.note.trim()) await addNote(bookId, rid, st.note.trim(), st.self);
+          close(); toast("Saved"); render();
+        } catch { st.busy = false; draw(); const m = el.querySelector(".fst"); if (m) { m.textContent = "Couldn't save just now. Try Done again."; m.classList.add("err"); } }
+        return;
+      }
+      draw();
+    };
+    draw();
+  }
+
+  // ---------- meal plan (household) ----------
+  // One doc per week at plan/<monday>, holding { entries: [...] }. Quick-entry types live at meta/plan.
+  // Entry: { id, day:"YYYY-MM-DD", kind:"recipe"|"quick"|"note", b, r, qt, sb, sr, note, made:true|false|undefined, at }
+  const QUICK_DEFAULT = [
+    { id: "takeout", label: "Take Out", color: "#ffc94a" },
+    { id: "diningout", label: "Dining Out", color: "#5a4df5" },
+    { id: "pizza", label: "Pizza Night", color: "#ff876d" },
+    { id: "nextovers", label: "Next-overs", color: "#3dbe8b", nx: true }
+  ];
+  const pad2 = n => String(n).padStart(2, "0");
+  const dkey = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const dparse = k => { const [y, m, d] = String(k).split("-").map(Number); return new Date(y, m - 1, d); };
+  const addDays = (k, n) => { const d = dparse(k); d.setDate(d.getDate() + n); return dkey(d); };
+  const weekOf = k => { const d = dparse(k); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return dkey(d); };
+  const todayKey = () => dkey(new Date());
+  const dayLong = k => k === todayKey() ? "Today" : k === addDays(todayKey(), 1) ? "Tomorrow" : k === addDays(todayKey(), -1) ? "Yesterday" : dparse(k).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  const dayFull = k => dparse(k).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  function weekLabel(wk) {
+    const a = dparse(wk), b = dparse(addDays(wk, 6));
+    const m = d => d.toLocaleDateString(undefined, { month: "short" });
+    return m(a) === m(b) ? `${m(a)} ${a.getDate()} to ${b.getDate()}` : `${m(a)} ${a.getDate()} to ${m(b)} ${b.getDate()}`;
+  }
+  const quickTypes = () => (S.quick && S.quick.length ? S.quick : QUICK_DEFAULT);
+  const quickById = id => quickTypes().find(q => q.id === id);
+  const inkOn = hex => { const h = String(hex || "#888").replace("#", ""); const [r, g, b] = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16) / 255); return (0.2126 * r + 0.7152 * g + 0.0722 * b) > 0.55 ? "#111214" : "#ffffff"; };
+  const planAll = () => [...S.plan.values()].flat();
+  const planFind = id => planAll().find(e => e.id === id);
+  const recipeRef = (b, r) => { const bk = S.books.get(b); const rc = bk && (bk.recipes || []).find(x => x.id === r); return rc ? { ...rc, bookId: b, book: bk } : null; };
+
+  const planQ = new Map();
+  function writeWeek(wk, mutate) {
+    const prev = planQ.get(wk) || Promise.resolve();
+    const next = prev.catch(() => {}).then(async () => {
+      const cur = S.plan.get(wk) || [];
+      const body = JSON.parse(JSON.stringify(cur));
+      mutate(body);
+      body.sort((x, y) => x.day.localeCompare(y.day) || (x.at || 0) - (y.at || 0));
+      S.plan.set(wk, body); render();
+      try { await S.db.doc("plan/" + wk).set({ entries: body, updatedAt: Date.now() }); }
+      catch (e) { S.plan.set(wk, cur); render(); throw e; }
+    });
+    planQ.set(wk, next);
+    return next.catch(e => { handleWriteErr(e); throw e; });
+  }
+  function planAdd(entry) {
+    const e = { id: rid8(), at: Date.now(), ...entry };
+    return writeWeek(weekOf(e.day), list => { list.push(e); }).then(() => toast(`Added to ${dayLong(e.day)}`)).catch(() => {});
+  }
+  function planRemove(id) { const e = planFind(id); if (!e) return; writeWeek(weekOf(e.day), list => { const i = list.findIndex(x => x.id === id); if (i >= 0) list.splice(i, 1); }).catch(() => {}); }
+  function planUpdate(id, fn) { const e = planFind(id); if (!e) return Promise.resolve(); return writeWeek(weekOf(e.day), list => { const x = list.find(y => y.id === id); if (x) fn(x); }).catch(() => {}); }
+  async function planMove(id, day) {
+    const e = planFind(id); if (!e || e.day === day) return;
+    const moved = { ...e, day, made: undefined }; delete moved.made;
+    if (weekOf(e.day) === weekOf(day)) { await planUpdate(id, x => { x.day = day; delete x.made; }); }
+    else {
+      try { await writeWeek(weekOf(day), list => { list.push(moved); }); await writeWeek(weekOf(e.day), list => { const i = list.findIndex(x => x.id === id); if (i >= 0) list.splice(i, 1); }); } catch { return; }
+    }
+    toast(`Moved to ${dayLong(day)}`);
+  }
+  async function saveQuick(list) {
+    const prev = S.quick; S.quick = list; render();
+    try { await S.db.doc("meta/plan").set({ quick: list, updatedAt: Date.now() }); } catch (e) { S.quick = prev; render(); handleWriteErr(e); }
+  }
+
+  // planned recipes from the last week that nobody has answered yet
+  function pendingAsks() {
+    const t = todayKey(), from = addDays(t, -7);
+    return planAll().filter(e => e.kind === "recipe" && e.made === undefined && e.day < t && e.day >= from && recipeRef(e.b, e.r))
+      .sort((a, b) => b.day.localeCompare(a.day));
+  }
+  function asksHTML(limit = 3) {
+    if (!S.canWrite) return "";
+    const list = pendingAsks(); if (!list.length) return "";
+    return `<section class="ask"><h3>Did you make it?</h3>${list.slice(0, limit).map(e => { const r = recipeRef(e.b, e.r);
+      return `<div class="askrow"><div class="askt"><b>${esc(r.t)}</b><small>Planned for ${esc(dayLong(e.day))}</small></div>
+        <div class="askb"><button data-act="made-yes" data-id="${esc(e.id)}">Yes</button><button data-act="made-no" data-id="${esc(e.id)}">No</button><button data-act="plan-move" data-id="${esc(e.id)}">Move</button></div></div>`; }).join("")}
+      ${list.length > limit ? `<p class="note">${list.length - limit} more on the Plan tab.</p>` : ""}</section>`;
+  }
+
+  function entryHTML(e) {
+    const menu = S.canWrite ? `<button class="emenu" data-act="plan-menu" data-id="${esc(e.id)}" aria-label="Options">•••</button>` : "";
+    const made = e.made === true ? `<span class="emade">✓ Made</span>` : e.made === false ? `<span class="emade no">Skipped</span>` : "";
+    if (e.kind === "recipe") {
+      const r = recipeRef(e.b, e.r);
+      if (!r) return `<li class="ent"><div class="eb"><span class="et gone">Recipe removed</span></div>${menu}</li>`;
+      return `<li class="ent ${e.made === false ? "skip" : ""}"><button class="eb" data-act="plan-open" data-b="${esc(e.b)}" data-r="${esc(e.r)}"><span class="et">${esc(r.t)}</span><span class="es">${esc(r.book.title)} · p. ${esc(r.p || "?")}${made ? " · " + made : ""}</span></button>${menu}</li>`;
+    }
+    if (e.kind === "quick") {
+      const q = quickById(e.qt) || { label: "Quick entry", color: "#9a9da3" };
+      const src = e.sb ? recipeRef(e.sb, e.sr) : null;
+      return `<li class="ent"><div class="eb"><span class="qchip" style="background:${esc(q.color)};color:${inkOn(q.color)}">${esc(q.label)}</span>
+        ${src ? `<span class="es">from <button class="lnk" data-act="plan-open" data-b="${esc(e.sb)}" data-r="${esc(e.sr)}">${esc(src.t)}</button></span>` : ""}
+        ${e.note ? `<span class="enote">${esc(e.note)}</span>` : ""}</div>${menu}</li>`;
+    }
+    return `<li class="ent"><div class="eb"><span class="enote solo">${esc(e.note)}</span></div>${menu}</li>`;
+  }
+
+  function jumpHTML() {
+    const rec = recentRecipes(5); if (!rec.length) return "";
+    return `<section class="jump"><h3>Jump back in</h3><ul class="list">${rec.map(r => rowHTML(r)).join("")}</ul></section>`;
+  }
+  function renderPlan() {
+    const wk = S.planWeek || weekOf(todayKey()), t = todayKey(), thisWk = weekOf(t) === wk;
+    const byDay = new Map(); for (const e of (S.plan.get(wk) || [])) { if (!byDay.has(e.day)) byDay.set(e.day, []); byDay.get(e.day).push(e); }
+    const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(wk, i));
+    main.innerHTML = `<div class="plan">${asksHTML(5)}
+      <div class="wkbar"><button class="wkarrow" data-act="wk" data-v="-1" aria-label="Previous week">‹</button>
+        <div class="wkt"><b>${esc(weekLabel(wk))}</b>${thisWk ? `<small>This week</small>` : `<button class="lnk" data-act="wk" data-v="0">Back to this week</button>`}</div>
+        <button class="wkarrow" data-act="wk" data-v="1" aria-label="Next week">›</button></div>
+      <ol class="days">${days.map(k => { const d = dparse(k), list = byDay.get(k) || [];
+        return `<li class="day ${k === t ? "today" : ""} ${k < t ? "past" : ""}">
+          <div class="dh"><span class="dn">${esc(d.toLocaleDateString(undefined, { weekday: "short" }))}</span><span class="dd">${d.getDate()}</span>${k === t ? `<span class="tdy">Today</span>` : ""}
+            ${S.canWrite ? `<button class="dadd" data-act="plan-add" data-day="${k}" aria-label="Add to ${esc(dayFull(k))}">+</button>` : ""}</div>
+          ${list.length ? `<ul class="ents">${list.map(entryHTML).join("")}</ul>` : ""}</li>`; }).join("")}</ol>
+      ${!planAll().length ? `<p class="note">Tap + on a day to plan a recipe, a quick night like Take Out, or a note. Recipe pages have an "Add to meal plan" button too.</p>` : ""}</div>`;
+  }
+
+  // a list of the next two weeks of days, plus any date
+  function openDaySheet(title, current, onPick) {
+    const t = todayKey();
+    const days = Array.from({ length: 14 }, (_, i) => addDays(t, i));
+    openSheet(`${head(title)}<div class="menu daylist">${days.map(k => `<button data-day="${k}" class="${k === current ? "cur" : ""}"><b>${esc(dayLong(k))}</b>${k === t || k === addDays(t, 1) ? `<span>${esc(dayFull(k))}</span>` : ""}${k === current ? `<span> · currently</span>` : ""}</button>`).join("")}</div>
+      <label class="f" style="margin-top:16px"><span>Another day</span><input class="in" type="date" name="other"></label>`, root => {
+      root.querySelectorAll("[data-day]").forEach(b => b.onclick = () => { closeSheet(); onPick(b.dataset.day); });
+      const o = root.querySelector("[name=other]"); o.onchange = () => { if (/^\d{4}-\d\d-\d\d$/.test(o.value)) { closeSheet(); onPick(o.value); } };
+    });
+  }
+
+  function pickRowHTML(r) { return `<button class="prow" data-b="${esc(r.bookId)}" data-r="${esc(r.id)}"><span class="t">${esc(r.t)}</span><span class="b">${esc(r.book.title)} · p. ${esc(r.p || "?")}</span></button>`; }
+  function recentRecipes(n) { const out = [], seen = new Set(); for (const v of S.recent) { const k = v.b + "/" + v.r; if (seen.has(k)) continue; const r = recipeRef(v.b, v.r); if (r) { seen.add(k); out.push(r); } if (out.length >= n) break; } return out; }
+
+  function openPlanPicker(day) {
+    const st = { day, nx: false };
+    const nxSources = () => {
+      const seen = new Set(), out = [];
+      const from = addDays(st.day, -14);
+      for (const e of planAll().filter(e => e.kind === "recipe" && e.day < st.day && e.day >= from).sort((a, b) => b.day.localeCompare(a.day))) {
+        const k = e.b + "/" + e.r; if (seen.has(k)) continue; const r = recipeRef(e.b, e.r); if (r) { seen.add(k); out.push([k, `${r.t} (${dayLong(e.day)})`]); }
+      }
+      for (const r of recentRecipes(8)) { const k = r.bookId + "/" + r.id; if (!seen.has(k)) { seen.add(k); out.push([k, r.t]); } }
+      return out;
+    };
+    const lists = query => {
+      if (query.trim()) {
+        const hits = search(query.trim()).slice(0, 30);
+        return hits.length ? `<div class="plist">${hits.map(pickRowHTML).join("")}</div>` : `<p class="note">Nothing on the shelf matches “${esc(query)}”.</p>`;
+      }
+      const rec = recentRecipes(6), favs = allRecipes().filter(r => r.fav).sort((a, b) => a.t.localeCompare(b.t)).slice(0, 12);
+      return (rec.length ? `<h4>Recently viewed</h4><div class="plist">${rec.map(pickRowHTML).join("")}</div>` : "") +
+        (favs.length ? `<h4>Bookmarks</h4><div class="plist">${favs.map(pickRowHTML).join("")}</div>` : "") +
+        (!rec.length && !favs.length ? `<p class="note">Search for a recipe, or bookmark a few to see them here.</p>` : "");
+    };
+    openSheet(`${head("Add to the plan")}
+      <label class="f dsel"><span>Day</span><input class="in" type="date" name="day" value="${esc(day)}"></label>
+      <input class="in" type="search" name="pq" placeholder="Search recipes" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="pres">${lists("")}</div>
+      <h4>Quick entries</h4>
+      <div class="qrow">${quickTypes().map(q => `<button class="qchip big" data-qt="${esc(q.id)}" style="background:${esc(q.color)};color:${inkOn(q.color)}">${esc(q.label)}</button>`).join("")}</div>
+      <form class="nxf hidden"><p class="note" style="margin-top:0">Leftovers turned into something new. Both fields are optional.</p>
+        <label class="f"><span>Riffing on</span><select class="in" name="src"><option value="">Nothing in particular</option>${nxSources().map(([k, l]) => `<option value="${esc(k)}">${esc(l)}</option>`).join("")}</select></label>
+        <label class="f"><span>Note</span><input class="in" name="note" maxlength="200" placeholder="Fried rice with Sunday's pork"></label>
+        <button class="btn hot" type="submit">Add Next-overs</button></form>
+      <h4>Or a note</h4>
+      <form class="pnote"><div class="isbnrow"><input class="in" name="note" maxlength="200" placeholder="Kelsey out, eat early, etc."><button class="btn" type="submit">Add</button></div></form>`, root => {
+      const dayIn = root.querySelector("[name=day]"); dayIn.onchange = () => { if (/^\d{4}-\d\d-\d\d$/.test(dayIn.value)) st.day = dayIn.value; };
+      const pq = root.querySelector("[name=pq]"), pres = root.querySelector(".pres");
+      pq.oninput = () => { pres.innerHTML = lists(pq.value); };
+      pres.onclick = e => { const b = e.target.closest(".prow"); if (!b) return; closeSheet(); planAdd({ day: st.day, kind: "recipe", b: b.dataset.b, r: b.dataset.r }); };
+      const nxf = root.querySelector(".nxf");
+      root.querySelectorAll("[data-qt]").forEach(b => b.onclick = () => {
+        const q = quickById(b.dataset.qt);
+        if (q?.nx) { nxf.classList.toggle("hidden"); b.classList.toggle("on", !nxf.classList.contains("hidden")); if (!nxf.classList.contains("hidden")) nxf.scrollIntoView({ block: "nearest" }); return; }
+        closeSheet(); planAdd({ day: st.day, kind: "quick", qt: b.dataset.qt });
+      });
+      nxf.onsubmit = e => { e.preventDefault(); const src = nxf.src.value.split("/"); const note = nxf.note.value.trim();
+        const q = quickTypes().find(x => x.nx); closeSheet();
+        planAdd({ day: st.day, kind: "quick", qt: q ? q.id : "nextovers", ...(src[0] ? { sb: src[0], sr: src[1] } : {}), ...(note ? { note } : {}) }); };
+      const pn = root.querySelector(".pnote"); pn.onsubmit = e => { e.preventDefault(); const note = pn.note.value.trim(); if (!note) return; closeSheet(); planAdd({ day: st.day, kind: "note", note }); };
+    });
+  }
+
+  function openEntryMenu(id) {
+    const e = planFind(id); if (!e) return;
+    const r = e.kind === "recipe" ? recipeRef(e.b, e.r) : null, src = e.sb ? recipeRef(e.sb, e.sr) : null;
+    const title = r ? r.t : e.kind === "quick" ? (quickById(e.qt)?.label || "Quick entry") : "Note";
+    openSheet(`${head(esc(title))}<p class="note" style="margin:-8px 0 8px">${esc(dayFull(e.day))}</p><div class="menu">
+      ${r ? `<button data-go="open"><b>Open recipe</b><span>${esc(r.book.title)} · p. ${esc(r.p || "?")}</span></button>` : ""}
+      ${src ? `<button data-go="src"><b>Open ${esc(src.t)}</b><span>The dish this riffs on</span></button>` : ""}
+      ${r && e.day <= todayKey() && e.made !== true ? `<button data-go="made"><b>We made it</b><span>Mark it as cooked</span></button>` : ""}
+      <button data-go="move"><b>Move to another day</b></button>
+      <button data-go="rm"><b>Remove</b><span>Takes it off the plan. Cooks you logged stay.</span></button></div>`, root => {
+      root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+        const g = b.dataset.go; closeSheet();
+        if (g === "open") go("recipe", { openBook: e.b, openRecipe: e.r });
+        else if (g === "src") go("recipe", { openBook: e.sb, openRecipe: e.sr });
+        else if (g === "made") answerMade(id, true);
+        else if (g === "move") openDaySheet("Move to…", e.day, d => planMove(id, d));
+        else if (g === "rm") { planRemove(id); toast("Removed from the plan"); }
+      });
+    });
+  }
+
+  function answerMade(id, yes) {
+    const e = planFind(id); if (!e) return;
+    planUpdate(id, x => { x.made = !!yes; });
+    if (yes) { const d = dparse(e.day); d.setHours(18, 0, 0, 0); openCookFlow(e.b, e.r, Math.min(d.getTime(), Date.now())); }
+    else toast("Skipped. Tap Move to plan it again.");
+  }
+
+  // recently viewed recipes, private to each person
+  function recordView(b, r) {
+    if (!b || !r) return;
+    S.recent = [{ b, r, at: Date.now() }, ...S.recent.filter(v => !(v.b === b && v.r === r))].slice(0, 20);
+    if (S.uid && S.db) S.db.doc(`data/users/${S.uid}/recent`).set({ v: S.recent }).catch(() => {});
+    else { try { localStorage.setItem("ci-recent", JSON.stringify(S.recent)); } catch {} }
+  }
+
+  function quickEditorHTML() {
+    const list = quickTypes();
+    return `<section><h3>Meal plan quick entries</h3>
+      <ul class="qedit">${list.map((q, i) => `<li><input type="color" value="${esc(q.color)}" data-qi="${i}" data-k="color" aria-label="Color for ${esc(q.label)}">
+        <input class="in" value="${esc(q.label)}" data-qi="${i}" data-k="label" maxlength="24" aria-label="Name">
+        <button class="qbtn" data-act="q-up" data-v="${i}" aria-label="Move up" ${i ? "" : "disabled"}>↑</button>
+        <button class="qbtn" data-act="q-rm" data-v="${i}" aria-label="Remove ${esc(q.label)}">×</button></li>`).join("")}</ul>
+      <button class="btn" data-act="q-add" style="margin-top:12px">Add a quick entry</button>
+      <p class="note">${list.some(q => q.nx) ? `${esc(list.find(q => q.nx).label)} can link to the dish it riffs on.` : ""}</p></section>`;
+  }
+
+  // ---------- Moving to the hosted version ----------
+  // Copies everything this copy of the app knows into one block of text,
+  // which the hosted version's Settings can read back in.
+  function exportHTML() {
+    return `<section><h3>Moving to the new version</h3>
+      <p class="note">Copies your books, covers, recipe photos, meal plan and your own notes, ready to paste into the new version's Settings.</p>
+      ${S.exportText ? `<textarea id="exportbox" readonly rows="5" style="width:100%;font:12px var(--mono)">${esc(S.exportText)}</textarea>
+        <div class="actions"><button class="btn hot" data-act="export-copy">Copy</button></div>
+        <p class="note" id="exportst">${Math.round(S.exportText.length / 1024)} KB ready.</p>`
+      : `<button class="btn" data-act="export-prep">Gather everything</button><p class="note" id="exportst"></p>`}</section>`;
+  }
+  async function exportPrep() {
+    const st = document.getElementById("exportst"); if (st) st.textContent = "Gathering… (recipe photos take a moment)";
+    const out = { v: 1, from: S.uid || "", at: Date.now(), books: {}, covers: {}, plan: {}, quick: S.quick || null, notes: S.myNotes || {}, recent: S.recent || [], photos: {} };
+    for (const [id, b] of S.books) out.books[id] = b;
+    for (const [id, src] of S.covers) out.covers[id] = { src };
+    for (const [wk, entries] of S.plan) out.plan[wk] = { entries };
+    try { const d = await S.db.doc("meta/plan").get(); if (d.exists) out.quick = d.data().quick || out.quick; } catch {}
+    for (const b of S.books.values()) for (const r of b.recipes || []) if (r.ph) {
+      try { const d = await S.db.doc("photos/" + r.id).get(); if (d.exists) out.photos[r.id] = d.data(); } catch {}
+    }
+    for (const [id] of S.covers) { try { const d = await S.db.doc("covers/" + id).get(); if (d.exists) out.covers[id] = d.data(); } catch {} }
+    S.exportText = JSON.stringify(out); render();
+  }
+
+  // ---------- Settings ----------
+  function renderSettings() {
+    const opts = [["auto", "Automatic", "Match your phone"], ["light", "Light", ""], ["dark", "Dark", ""]];
+    main.innerHTML = `<div class="settings"><button class="back" data-act="settings-back">← Back</button>
+      <h2>Settings</h2>
+      <section><h3>Appearance</h3>
+        <div class="seg">${opts.map(([k, l]) => `<button type="button" data-act="theme" data-v="${k}" aria-pressed="${theme === k}">${l}</button>`).join("")}</div>
+        <p class="note">Automatic switches between light and dark with your phone.</p></section>
+      ${S.canWrite && S.db ? quickEditorHTML() : ""}
+      ${window.ccPort ? window.ccPort.settingsHTML() : (S.db && S.isOwner ? exportHTML() : "")}
+    </div>`;
+    window.ccPort?.wire(main);
+    main.querySelectorAll(".qedit [data-qi]").forEach(inp => inp.onchange = () => {
+      const list = quickTypes().map(x => ({ ...x })), x = list[+inp.dataset.qi]; if (!x) return;
+      if (inp.dataset.k === "label") { const v = inp.value.trim(); if (!v) { inp.value = x.label; return; } x.label = v.slice(0, 24); } else x.color = inp.value;
+      setTimeout(() => saveQuick(list));
+    });
+  }
+
+  const RECIPE_PROMPT = `These photos show a recipe from a cookbook (one or two pages).
+List its ingredients as plain names only, without quantities, units or preparation notes: "shallots", "lemon juice", "canned cannellini beans", "smoked trout". Keep them in the order printed. Include sub-recipe ingredients (a sauce or topping) in the same list. Skip water, salt and black pepper.
+Also read how many it serves and the total time if printed (as written, e.g. "6" and "45 minutes"; "" if not printed).
+Then suggest tags from this list only: ${TAGS.join(", ")}. Use a diet tag (vegetarian, vegan, pescatarian, gluten-free, dairy-free) only if the full ingredient list clearly supports it. Use "weeknight" only for recipes that look doable in about 45 minutes. 1 to 5 tags.
+Reply with only JSON: {"ingredients":["..."],"serves":"","time":"","tags":["..."]}`;
+  async function readRecipePhoto(bookId, id, files) {
+    const st = () => document.getElementById("rpst");
+    const say = (t, err) => { const el = st(); if (el) { el.textContent = t; el.classList.toggle("err", !!err); } };
+    say("Reading the recipe… (up to a minute)");
+    try {
+      const max = S.limits?.images?.maxCount || 2;
+      const res = await S.sample.json(RECIPE_PROMPT, { images: [...files].slice(0, Math.min(2, max)) });
+      const ing = (Array.isArray(res?.ingredients) ? res.ingredients : []).map(x => String(x).trim().toLowerCase()).filter(Boolean).slice(0, 40);
+      if (!ing.length) { say("Couldn't find an ingredient list in that photo. Try again with the whole page in frame.", true); return; }
+      const tags = (Array.isArray(res?.tags) ? res.tags : []).map(t => String(t).toLowerCase().trim()).filter(t => TAGS.includes(t));
+      await updRecipe(bookId, id, x => {
+        x.ing = ing;
+        if (res?.serves) x.serves = String(res.serves).slice(0, 20);
+        if (res?.time) x.time = String(res.time).slice(0, 30);
+        x.tagsG = tags.filter(t => !(x.tags || []).includes(t) && !(x.tagsX || []).includes(t));
+      });
+      toast("Ingredients added");
+    } catch (e) { say(SAMPLE_COPY[e?.code] || "Couldn't read that photo. Try again.", true); }
+  }
+
+  // suggest tags for a whole book in a few calls; results are guesses until confirmed
+  async function suggestTags(bookId, onlyIds) {
+    const b = S.books.get(bookId); if (!b || !canSee()) return 0;
+    const todo = (b.recipes || []).filter(r => !onlyIds || onlyIds.includes(r.id));
+    let n = 0;
+    for (let i = 0; i < todo.length; i += 60) {
+      const chunk = todo.slice(i, i + 60);
+      const lines = chunk.map((r, j) => `${j}|${r.t}|${[...(r.ing || r.k || [])].join(", ")}`).join("\n");
+      const res = await S.sample.json(`Cookbook: "${b.title}"${b.author ? " by " + b.author : ""}.
+Each line below is index|recipe title|known ingredients (may be partial or empty).
+For each recipe suggest 1 to 4 tags from this list only: ${TAGS.join(", ")}.
+Course tags (breakfast, appetizer, snack, soup, salad, main, side, dessert, baking, bread, drink, sauce) can come from the title. Only use a diet tag (vegetarian, vegan, pescatarian, gluten-free, dairy-free) when the title and ingredients make it near certain. Only use "weeknight" when the dish is obviously quick.
+Reply with only JSON: {"tags":{"0":["main","weeknight"]}}
+
+${lines}`);
+      const map = res?.tags || {};
+      await writeBook(bookId, bk => {
+        chunk.forEach((c, j) => {
+          const r = (bk.recipes || []).find(x => x.id === c.id); if (!r) return;
+          const got = (Array.isArray(map[j]) ? map[j] : Array.isArray(map[String(j)]) ? map[String(j)] : []).map(t => String(t).toLowerCase()).filter(t => TAGS.includes(t) && !(r.tags || []).includes(t) && !(r.tagsX || []).includes(t));
+          if (got.length) { r.tagsG = [...new Set([...(r.tagsG || []), ...got])]; n++; }
+        });
+      });
+    }
+    return n;
+  }
+
+  function bookListHTML(b, recs) {
+    const query = (S.bookQ || "").trim();
+    if (!recs.length) return `<p class="note">No recipes in this one yet.${S.canWrite ? " When you have the book handy, use Add pages from photos to read its index." : ""}</p>`;
+    if (!query) return `<ul class="list">${recs.map(r => rowHTML({ ...r, bookId: S.openBook, book: b }, "", true)).join("")}</ul>`;
+    const hits = search(query, S.openBook);
+    if (!hits.length) return `<p class="note">Nothing in this book matches “${esc(query)}”.</p>`;
+    return `<p class="subnote">${plural(hits.length, "match", "matches")}</p><ul class="list">${hits.map(r => rowHTML(r, query, true)).join("")}</ul>`;
+  }
+  const pageNum = p => { const n = parseInt(String(p || "").replace(/[^\d].*$/, ""), 10); return isNaN(n) ? 99999 : n; };
+  const PALETTE = [["#111214", 0], ["#ff4a1c", 0], ["#2f5bea", 0], ["#0f8a5f", 0], ["#f2c230", 1], ["#6b3fd4", 0], ["#d9dbe0", 1], ["#e85d9c", 0]];
+  const colorFor = id => { let h = 0; for (const c of String(id)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; };
+  const lastName = a => String(a || "\uffff").split(/,|&| and /)[0].trim().split(" ").pop();
+  function coverHTML(id, b) {
+    const src = S.covers.get(id);
+    if (src) return `<img class="cover" src="${esc(src)}" alt="${esc(b.title)}">`;
+    const [bg, light] = colorFor(id);
+    return `<div class="cover ph ${light ? "light" : ""}" style="background:${bg}"><b>${esc(b.title)}</b><i>${esc(b.author || "")}</i></div>`;
+  }
+
+  // ---------- covers ----------
+
+  async function saveCover(id, cv) {
+    const prev = S.covers.get(id);
+    S.covers.set(id, cv.src); render();
+    // source marks covers to swap for clean ones when the standalone app looks covers up
+    try { await S.db.doc("covers/" + id).set({ src: cv.src, source: "photo", straightened: !!cv.straightened, updatedAt: Date.now() }); }
+    catch (e) { if (prev) S.covers.set(id, prev); else S.covers.delete(id); render(); handleWriteErr(e); throw e; }
+  }
+  async function removeCover(id) {
+    const prev = S.covers.get(id); S.covers.delete(id); render();
+    try { await S.db.doc("covers/" + id).delete(); } catch (e) { if (prev) S.covers.set(id, prev); render(); handleWriteErr(e); }
+  }
+  const canSee = () => !!(S.sample && S.limits?.images);
+
+  // ---- straightening: Claude finds the cover's corners, the canvas flattens it ----
+  // Self-contained: prepareCover() is the only caller. Drop it when covers come from a lookup instead.
+  async function loadBitmap(file) {
+    try { return await createImageBitmap(file, { imageOrientation: "from-image" }); }
+    catch { return await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(file); }); }
+  }
+  function toJpeg(c) {
+    let q = 0.8, url = c.toDataURL("image/jpeg", q);
+    while (url.length > 150000 && q > 0.4) { q -= 0.1; url = c.toDataURL("image/jpeg", q); }
+    return url;
+  }
+  function plainCover(bmp, maxW = 480) {
+    const sc = Math.min(1, maxW / bmp.width);
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    return toJpeg(c);
+  }
+  function solve(A, bv) { // Gaussian elimination, 8x8
+    const n = bv.length, M = A.map((r, i) => [...r, bv[i]]);
+    for (let i = 0; i < n; i++) {
+      let p = i; for (let r = i + 1; r < n; r++) if (Math.abs(M[r][i]) > Math.abs(M[p][i])) p = r;
+      [M[i], M[p]] = [M[p], M[i]];
+      if (Math.abs(M[i][i]) < 1e-12) return null;
+      for (let r = 0; r < n; r++) if (r !== i) { const f = M[r][i] / M[i][i]; for (let c = i; c <= n; c++) M[r][c] -= f * M[i][c]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  function quadOk(q) {
+    if (!Array.isArray(q) || q.length !== 4) return false;
+    if (!q.every(p => Array.isArray(p) && p.length === 2 && p.every(v => typeof v === "number" && v > -0.03 && v < 1.03))) return false;
+    let sign = 0, area = 0;
+    for (let i = 0; i < 4; i++) {
+      const [a, b, c] = [q[i], q[(i + 1) % 4], q[(i + 2) % 4]];
+      const cr = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+      if (cr === 0 || (sign && Math.sign(cr) !== sign)) return false; sign = Math.sign(cr);
+      area += a[0] * b[1] - b[0] * a[1];
+    }
+    return Math.abs(area) / 2 > 0.06;
+  }
+  function warp(bmp, quad, maxW = 480) {
+    // work from a copy no larger than 1800px so phone photos stay fast
+    const sc = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+    const sw = Math.round(bmp.width * sc), sh = Math.round(bmp.height * sc);
+    const sc1 = document.createElement("canvas"); sc1.width = sw; sc1.height = sh;
+    const sx = sc1.getContext("2d"); sx.drawImage(bmp, 0, 0, sw, sh);
+    const src = sx.getImageData(0, 0, sw, sh).data;
+    const P = quad.map(([x, y]) => [x * sw, y * sh]);
+    const d = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const W0 = (d(P[0], P[1]) + d(P[3], P[2])) / 2, H0 = (d(P[0], P[3]) + d(P[1], P[2])) / 2;
+    const ratio = H0 / W0; if (!(ratio > 0.5 && ratio < 2.4)) return null;
+    const W = Math.round(Math.min(maxW, W0)), H = Math.round(W * ratio);
+    const dst = [[0, 0], [W, 0], [W, H], [0, H]], A = [], bv = [];
+    for (let i = 0; i < 4; i++) {
+      const [u, v] = dst[i], [x, y] = P[i];
+      A.push([u, v, 1, 0, 0, 0, -u * x, -v * x]); bv.push(x);
+      A.push([0, 0, 0, u, v, 1, -u * y, -v * y]); bv.push(y);
+    }
+    const h = solve(A, bv); if (!h) return null;
+    const out = document.createElement("canvas"); out.width = W; out.height = H;
+    const ox = out.getContext("2d"), img = ox.createImageData(W, H), o = img.data;
+    for (let v = 0; v < H; v++) for (let u = 0; u < W; u++) {
+      const z = h[6] * u + h[7] * v + 1, x = (h[0] * u + h[1] * v + h[2]) / z, y = (h[3] * u + h[4] * v + h[5]) / z;
+      const x0 = Math.max(0, Math.min(sw - 2, Math.floor(x))), y0 = Math.max(0, Math.min(sh - 2, Math.floor(y)));
+      const fx = Math.max(0, Math.min(1, x - x0)), fy = Math.max(0, Math.min(1, y - y0));
+      const i00 = (y0 * sw + x0) * 4, i10 = i00 + 4, i01 = i00 + sw * 4, i11 = i01 + 4, k = (v * W + u) * 4;
+      for (let c = 0; c < 3; c++) o[k + c] = (src[i00 + c] * (1 - fx) + src[i10 + c] * fx) * (1 - fy) + (src[i01 + c] * (1 - fx) + src[i11 + c] * fx) * fy;
+      o[k + 3] = 255;
+    }
+    ox.putImageData(img, 0, 0);
+    return toJpeg(out);
+  }
+  const COVER_PROMPT = `This is a photo of a cookbook's front cover, possibly taken at an angle with a table or background around it.
+Find the four outer corners of the FRONT COVER itself: not the spine, not the background, not a shadow, not a dust-jacket flap.
+Give each corner as [x, y] in fractions of the image width and height (0 to 1, origin at the top-left of the image), in this order: top-left, top-right, bottom-right, bottom-left of the cover as it reads upright.
+Also read the main title (title case, without the subtitle) and the author name(s) as printed, joined with " & " if several, or "" if none.
+If any corner of the cover is cut off or hidden, set "found" to false and "corners" to [].
+Reply with only JSON: {"found":true,"corners":[[0.1,0.1],[0.9,0.1],[0.9,0.9],[0.1,0.9]],"title":"...","author":"..."}`;
+
+  // overlay for confirming a cover; sits above sheets
+  const cvbox = document.createElement("div"); cvbox.className = "cvbox"; document.body.append(cvbox);
+  function cvShow(html) { cvbox.innerHTML = `<div class="cvpanel">${html}</div>`; cvbox.classList.add("on"); }
+  function cvHide() { cvbox.classList.remove("on"); cvbox.innerHTML = ""; }
+  // file -> {src, straightened, title, author} or null if cancelled
+  async function prepareCover(file) {
+    let bmp;
+    try { bmp = await loadBitmap(file); } catch { toast("Couldn't open that photo"); return null; }
+    const plain = plainCover(bmp);
+    let straight = null, title = "", author = "", ctl = new AbortController();
+    if (canSee()) {
+      cvShow(`<img src="${plain}" class="cvimg dim" alt=""><p class="status">Finding the cover's edges… (up to a minute)</p>
+        <div class="actions"><button class="btn ghost" data-k="skip">Skip, use photo as is</button></div>`);
+      const skipped = new Promise(res => cvbox.querySelector("[data-k=skip]").onclick = () => { ctl.abort(); res("skip"); });
+      try {
+        const r = await Promise.race([S.sample.json(COVER_PROMPT, { images: [file], signal: ctl.signal }), skipped]);
+        if (r !== "skip") {
+          title = String(r?.title || "").trim(); author = String(r?.author || "").trim();
+          if (r?.found && quadOk(r.corners)) straight = warp(bmp, r.corners);
+        }
+      } catch (e) { /* fall through to plain */ }
+    }
+    return await new Promise(res => {
+      const msg = straight ? "Straightened and cropped to the cover." : canSee() ? "Couldn't find all four corners, so this is the photo as taken. Cropping it in Photos first helps." : "";
+      cvShow(`<img src="${straight || plain}" class="cvimg" alt=""><p class="status">${msg}</p>
+        <div class="actions">${straight ? `<button class="btn solid" data-k="ok">Use this</button><button class="btn ghost" data-k="orig">Use original photo</button>` : `<button class="btn solid" data-k="orig">Use it</button>`}
+        <button class="btn ghost" data-k="no">Cancel</button></div>`);
+      cvbox.querySelectorAll("[data-k]").forEach(btn => btn.onclick = () => {
+        const k = btn.dataset.k; cvHide();
+        if (k === "no") res(null);
+        else res({ src: k === "ok" ? straight : plain, straightened: k === "ok", title, author });
+      });
+    });
+  }
+  function coverPicker(onPick) {
+    const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
+    inp.onchange = async () => { const f = inp.files[0]; if (f) onPick(f); };
+    inp.click();
+  }
+  function openCover(id) {
+    if (!S.books.get(id)) return;
+    coverPicker(async f => {
+      const cv = await prepareCover(f); if (!cv) return;
+      try { await saveCover(id, cv); toast("Cover saved"); } catch {}
+    });
+  }
+
+  // ---- ISBN, for exact cover lookups later ----
+  function isbnOk(raw) {
+    const s = String(raw || "").replace(/[^0-9X]/gi, "").toUpperCase();
+    if (s.length === 13 && /^\d+$/.test(s)) return [...s].reduce((t, d, i) => t + +d * (i % 2 ? 3 : 1), 0) % 10 === 0 ? s : null;
+    if (s.length === 10 && /^\d{9}[\dX]$/.test(s)) return [...s].reduce((t, d, i) => t + (d === "X" ? 10 : +d) * (10 - i), 0) % 11 === 0 ? s : null;
+    return null;
+  }
+  // barcode decoding runs on the device: no Claude call, nothing uploaded
+  const ZXING_URL = "https://cdn.jsdelivr.net/npm/@zxing/library@0.23.0/umd/index.min.js";
+  let zxingP = null;
+  function loadZxing() {
+    if (window.ZXing) return Promise.resolve(window.ZXing);
+    return zxingP ||= new Promise((res, rej) => {
+      const el = document.createElement("script"); el.src = ZXING_URL;
+      el.onload = () => window.ZXing ? res(window.ZXing) : rej(new Error("no zxing"));
+      el.onerror = () => { zxingP = null; rej(new Error("load failed")); };
+      document.head.append(el);
+    });
+  }
+  async function decodeBarcode(file) {
+    const Z = await loadZxing();
+    const bmp = await loadBitmap(file);
+    const hints = new Map([[Z.DecodeHintType.POSSIBLE_FORMATS, [Z.BarcodeFormat.EAN_13, Z.BarcodeFormat.UPC_A, Z.BarcodeFormat.EAN_8]], [Z.DecodeHintType.TRY_HARDER, true]]);
+    const reader = new Z.MultiFormatReader(); reader.setHints(hints);
+    // try a few sizes and orientations: phone photos are big and barcodes can be sideways
+    for (const size of [1400, 900, 2000]) for (const rot of [0, 90]) {
+      const sc = Math.min(1, size / Math.max(bmp.width, bmp.height));
+      const w = Math.round(bmp.width * sc), h = Math.round(bmp.height * sc);
+      const c = document.createElement("canvas"); c.width = rot ? h : w; c.height = rot ? w : h;
+      const x = c.getContext("2d");
+      if (rot) { x.translate(h, 0); x.rotate(Math.PI / 2); }
+      x.drawImage(bmp, 0, 0, w, h);
+      try {
+        const r = reader.decode(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(c))));
+        const t = r.getText(); if (isbnOk(t) && /^97[89]/.test(t)) return t;
+      } catch { /* not found at this size, keep trying */ }
+    }
+    return null;
+  }
+  async function readIsbn(file) {
+    const r = await S.sample.json(`This is a photo of a book's back cover or copyright page. Find its ISBN. Prefer the ISBN-13 (13 digits starting 978 or 979, usually printed above or below the barcode, or on the copyright page labeled ISBN). Reply with only JSON: {"isbn":"9781234567897"} using digits only, or {"isbn":""} if none is readable.`, { images: [file], modelTier: "quick" });
+    return String(r?.isbn || "").replace(/[^0-9X]/gi, "");
+  }
+  const isbnField = (val = "") => `<div class="f"><span>ISBN (optional, helps find the exact cover later)</span>
+    <div class="isbnrow"><input class="in" name="isbn" inputmode="numeric" autocomplete="off" value="${esc(val)}" style="font-family:var(--mono)">
+    <label class="btn ghost">Scan barcode<input type="file" accept="image/*" capture="environment" name="isbnph"></label></div>
+    <div class="status" data-isst style="margin:4px 0 0"></div></div>`;
+  function wireIsbn(root) {
+    const inp = root.querySelector("[name=isbn]"), ph = root.querySelector("[name=isbnph]"), st = root.querySelector("[data-isst]");
+    if (!inp) return;
+    const check = () => { const v = inp.value.trim(); st.textContent = !v ? "" : isbnOk(v) ? "Looks right." : "That doesn't check out as an ISBN. Check the digits."; st.classList.toggle("err", !!v && !isbnOk(v)); };
+    inp.oninput = check; check();
+    if (ph) ph.onchange = async () => {
+      const f = ph.files[0]; if (!f) return; ph.value = "";
+      st.classList.remove("err"); st.textContent = "Reading the barcode…";
+      let got = null;
+      try { got = await decodeBarcode(f); } catch { /* library unavailable: fall back below */ }
+      if (!got && canSee()) {
+        // no clean barcode in frame: ask Claude to find printed ISBN digits instead
+        st.textContent = "No barcode found. Looking for printed ISBN digits…";
+        try { got = await readIsbn(f); } catch { got = null; }
+      }
+      if (got) { inp.value = got; check(); if (isbnOk(got)) st.textContent = "Got it."; }
+      else st.textContent = "Couldn't find an ISBN. Get closer to the barcode, or type the number in.";
+    };
+  }
+  const isbnValue = root => { const v = root.querySelector("[name=isbn]")?.value.trim() || ""; return isbnOk(v) || v.replace(/[^0-9X]/gi, ""); };
+
+  // ---------- sheets ----------
+  const sheet = $("#sheet"), scrim = $("#scrim");
+  let sheetCleanup = null, sheetGuard = null;
+  function openSheet(html, onMount) {
+    if (typeof sheetCleanup === "function") sheetCleanup();
+    sheetCleanup = null; sheetGuard = null;
+    sheet.innerHTML = html; sheet.classList.add("on"); scrim.classList.add("on"); sheet.scrollTop = 0;
+    sheet.querySelectorAll("[data-close]").forEach(b => b.onclick = () => closeSheet());
+    sheetCleanup = onMount ? onMount(sheet) : null;
+  }
+  // tap outside, ×, or Escape go through the guard; code that finishes a task passes force
+  function closeSheet(force) {
+    if (force !== true && sheetGuard) { const msg = sheetGuard(); if (msg) { askClose(msg); return; } }
+    sheet.classList.remove("on"); scrim.classList.remove("on");
+    if (typeof sheetCleanup === "function") sheetCleanup(); sheetCleanup = null; sheetGuard = null;
+  }
+  function askClose(msg, onLeave) {
+    sheet.querySelector(".closeask")?.remove();
+    const el = document.createElement("div"); el.className = "closeask"; el.setAttribute("role", "alertdialog");
+    el.innerHTML = `<p><b>${esc(msg.title)}</b>${msg.body ? `<br>${esc(msg.body)}` : ""}</p>
+      <div class="actions"><button class="btn solid" data-c="stay">${esc(msg.stay || "Keep going")}</button><button class="btn" data-c="leave">${esc(msg.leave || "Discard")}</button></div>`;
+    el.onclick = e => { const c = e.target.closest("[data-c]")?.dataset.c; if (c === "stay") el.remove(); else if (c === "leave") { if (onLeave) { sheetGuard = null; onLeave(); } else closeSheet(true); } };
+    sheet.prepend(el); sheet.scrollTop = 0; el.querySelector("[data-c=stay]").focus();
+  }
+  scrim.onclick = () => closeSheet();
+  const head = t => `<h3><span>${t}</span><button class="x" data-close aria-label="Close">×</button></h3>`;
+
+  function bookOptions(selected) {
+    return sortedBooks().map(([id, b]) => `<option value="${esc(id)}" ${id === selected ? "selected" : ""}>${esc(b.title)}</option>`).join("") +
+      `<option value="__new" ${!S.books.size || selected === "__new" ? "selected" : ""}>+ New book…</option>`;
+  }
+  // Cookbook Club pick: "YYYY-MM", or true when the month isn't known. Carried into the React app's club shelf.
+  const clubLabel = v => { if (v === true) return "Cookbook Club pick"; const m = /^(\d{4})-(\d{2})$/.exec(v || ""); return m ? `Club pick · ${new Date(+m[1], +m[2] - 1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" })}` : ""; };
+  const clubShort = v => { const m = /^(\d{4})-(\d{2})$/.exec(v || ""); return m ? `Club · ${new Date(+m[1], +m[2] - 1, 1).toLocaleDateString(undefined, { month: "short" })} '${m[1].slice(2)}` : v === true ? "Club" : ""; };
+  const clubFieldHTML = (v = null) => `<div class="clubf"><label class="selfchk big"><input type="checkbox" name="clubon" ${v ? "checked" : ""}> Also a Cookbook Club pick</label>
+    <div class="f ${v ? "" : "hidden"}" data-clubm><span>Club month (optional)</span>${(() => {
+      const [y, m] = typeof v === "string" ? v.split("-") : ["", ""], now = new Date(), last = now.getFullYear() + 1, years = [];
+      for (let i = 2025; i <= last; i++) years.push(String(i));
+      if (y && !years.includes(y)) years.unshift(y);
+      const yr = y || String(now.getFullYear());
+      return `<input type="hidden" name="clubm" value="${esc(m)}"><input type="hidden" name="cluby" value="${esc(yr)}">
+        <div class="clubyrs" role="group" aria-label="Year">${years.map(x => `<button type="button" data-cy="${x}" aria-pressed="${x === yr}">${x}</button>`).join("")}</div>
+        <div class="clubmos" role="group" aria-label="Month">${Array.from({ length: 12 }, (_, i) => { const mm = String(i + 1).padStart(2, "0");
+          return `<button type="button" data-cm="${mm}" aria-pressed="${mm === m}">${new Date(2026, i, 1).toLocaleDateString(undefined, { month: "short" })}</button>`; }).join("")}</div>`; })()}</div></div>`;
+  function wireClub(root) {
+    const cb = root.querySelector("[name=clubon]"), m = root.querySelector("[data-clubm]"); if (!cb) return;
+    cb.onchange = () => m.classList.toggle("hidden", !cb.checked);
+    m.onclick = e => {
+      const y = e.target.closest("[data-cy]"), mo = e.target.closest("[data-cm]");
+      if (y) { m.querySelector("[name=cluby]").value = y.dataset.cy; m.querySelectorAll("[data-cy]").forEach(b => b.setAttribute("aria-pressed", b === y)); }
+      if (mo) { const on = mo.getAttribute("aria-pressed") !== "true"; // tap the chosen month again to clear it
+        m.querySelector("[name=clubm]").value = on ? mo.dataset.cm : ""; m.querySelectorAll("[data-cm]").forEach(b => b.setAttribute("aria-pressed", on && b === mo)); }
+    };
+  }
+  function clubValue(root) { const cb = root.querySelector("[name=clubon]"); if (!cb?.checked) return null;
+    const m = root.querySelector("[name=clubm]").value, y = root.querySelector("[name=cluby]").value;
+    return m && y ? `${y}-${m}` : true; }
+  const newBookFieldsHTML = () => `<div class="newbook hidden">
+    <div class="cvrow"><div class="thumb"></div><div><div class="btns"><label class="btn ghost">Cover photo<input type="file" accept="image/*" name="nbc"></label></div>
+      <div class="status" data-cvst style="margin:6px 0 0">${canSee() ? "Optional. Claude straightens it and reads the title and author." : "Optional."}</div></div></div>
+    <label class="f"><span>Book title</span><input class="in" name="nbt" autocomplete="off"></label>
+    <label class="f"><span>Author (optional)</span><input class="in" name="nba" autocomplete="off"></label>
+    ${isbnField()}${clubFieldHTML()}</div>`;
+  function wireBookSelect(root) {
+    const sel = root.querySelector("select[name=book]"), nb = root.querySelector(".newbook");
+    const sync = () => nb.classList.toggle("hidden", sel.value !== "__new"); sel.onchange = sync; sync();
+    const inp = nb.querySelector("[name=nbc]"), st = nb.querySelector("[data-cvst]"), th = nb.querySelector(".thumb");
+    wireIsbn(nb); wireClub(nb);
+    inp.onchange = async () => {
+      const f = inp.files[0]; if (!f) return; inp.value = "";
+      const cv = await prepareCover(f); if (!cv) return;
+      root._cover = cv;
+      th.innerHTML = `<img class="cover" src="${cv.src}" alt="">`;
+      const t = nb.querySelector("[name=nbt]"), a = nb.querySelector("[name=nba]");
+      if (cv.title && !t.value.trim()) { t.value = cv.title; if (!a.value.trim()) a.value = cv.author; st.textContent = "Title and author read from the cover. Check them."; }
+      else if (!t.value.trim()) st.textContent = "Type the title in.";
+    };
+  }
+  async function resolveBook(root) {
+    const sel = root.querySelector("select[name=book]");
+    if (sel.value !== "__new") return sel.value;
+    const title = root.querySelector("[name=nbt]").value.trim();
+    if (!title) { root.querySelector("[name=nbt]").focus(); throw { quiet: true }; }
+    const id = newBookId();
+    const isbn = isbnValue(root);
+    const club = clubValue(root);
+    await writeBook(id, b => { b.title = title; b.author = root.querySelector("[name=nba]").value.trim(); if (isbn) b.isbn = isbn; if (club) b.club = club; b.recipes = []; });
+    if (root._cover) { try { await saveCover(id, root._cover); } catch {} root._cover = null; }
+    return id;
+  }
+
+  // add menu
+  function openMenu() {
+    openSheet(`${head("Add to the shelf")}<div class="menu">
+      <button data-go="import"><b>Import a book from photos</b><span>Snap the contents page or the index. Claude reads it, you check it.</span></button>
+      <button data-go="add"><b>Add one recipe</b><span>Title, book, page.</span></button>
+      <button data-go="paste"><b>Paste a list</b><span>One recipe per line with its page number at the end.</span></button></div>`, root => {
+      root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+        const g = b.dataset.go; if (g === "import") openImport(null, "photos"); else if (g === "paste") openImport(null, "paste"); else openAdd();
+      });
+    });
+  }
+
+  // add / edit recipe
+  function openAdd(bookId, prefill, edit) {
+    const r = edit ? (S.books.get(bookId).recipes || []).find(x => x.id === edit) : null;
+    const lastBook = bookId || openAdd.last || (sortedBooks()[0] || [])[0];
+    openSheet(`${head(r ? "Edit recipe" : "Add a recipe")}
+      <form id="addf">
+        <label class="f"><span>Recipe</span><input class="in" name="t" required autocomplete="off" value="${esc(r ? r.t : prefill || "")}"></label>
+        <div class="two">
+          <label class="f"><span>Book</span><select class="in" name="book" ${r ? "disabled" : ""}>${bookOptions(lastBook)}</select></label>
+          <label class="f"><span>Page</span><input class="in" name="p" inputmode="numeric" autocomplete="off" value="${esc(r ? r.p : "")}" style="font-family:var(--mono)"></label>
+        </div>
+        ${newBookFieldsHTML()}
+        <label class="f"><span>Main ingredients (optional, comma separated)${r?.ki ? " · guessed, edit to confirm" : ""}</span><input class="in" name="k" autocomplete="off" placeholder="squash, sage, brown butter" value="${esc((r?.k || []).join(", "))}"></label>
+        <div class="actions">
+          <button class="btn solid" type="submit">${r ? "Save" : "Add"}</button>
+          ${r ? `<button class="btn danger" type="button" id="del">Delete</button>` : `<button class="btn" type="button" id="another">Add &amp; another</button>`}
+        </div>
+        <div class="confirm" id="cf"><p>Delete “${esc(r?.t)}” from the index?</p><button class="btn hot" type="button" id="delyes">Delete</button> <button class="btn ghost" type="button" id="delno">Keep it</button></div>
+      </form>`, root => {
+      wireBookSelect(root);
+      const f = root.querySelector("#addf");
+      setTimeout(() => f.t.focus(), 250);
+      const save = async (again) => {
+        const t = f.t.value.trim(); if (!t) { f.t.focus(); return; }
+        const p = f.p.value.trim();
+        const k = splitKw(f.k.value);
+        const kChanged = !r || k.join("|") !== (r.k || []).join("|");
+        try {
+          const id = r ? bookId : await resolveBook(root);
+          openAdd.last = id;
+          await writeBook(id, b => {
+            b.recipes = b.recipes || [];
+            if (r) { const x = b.recipes.find(x => x.id === r.id); if (x) { x.t = t; x.p = p; x.k = k; if (kChanged) delete x.ki; } }
+            else b.recipes.push({ id: rid(), t, p, k });
+          });
+          toast(r ? "Saved" : `Added to ${S.books.get(id)?.title}`);
+          if (again) { openAdd(id); } else closeSheet();
+        } catch (e) { if (!e?.quiet) {} }
+      };
+      f.onsubmit = e => { e.preventDefault(); save(false); };
+      root.querySelector("#another")?.addEventListener("click", () => save(true));
+      root.querySelector("#del")?.addEventListener("click", () => root.querySelector("#cf").classList.add("on"));
+      root.querySelector("#delno")?.addEventListener("click", () => root.querySelector("#cf").classList.remove("on"));
+      root.querySelector("#delyes")?.addEventListener("click", async () => {
+        try { await writeBook(bookId, b => { b.recipes = (b.recipes || []).filter(x => x.id !== r.id); }); toast("Deleted"); closeSheet(); if (S.view === "recipe") { S.view = "book"; render(); } } catch {}
+      });
+    });
+  }
+
+
+
+  // edit book
+  function openEditBook(id) {
+    const b = S.books.get(id);
+    openSheet(`${head("Edit book")}<form id="ebf">
+      <div class="cvrow"><div class="thumb">${coverHTML(id, b)}</div><div class="btns">
+        <button class="btn ghost" type="button" id="cvchg">${S.covers.has(id) ? "Change cover" : "Add cover photo"}</button>
+        ${S.covers.has(id) ? `<button class="btn ghost" type="button" id="cvrm">Remove cover</button>` : ""}</div></div>
+      <label class="f"><span>Title</span><input class="in" name="t" value="${esc(b.title)}" required></label>
+      <label class="f"><span>Author</span><input class="in" name="a" value="${esc(b.author || "")}"></label>
+      ${isbnField(b.isbn || "")}
+      ${clubFieldHTML(b.club || null)}
+      <div class="actions"><button class="btn solid" type="submit">Save</button><button class="btn danger" type="button" id="del">Remove book</button></div>
+      <div class="confirm" id="cf"><p>Remove <b>${esc(b.title)}</b> and all ${plural((b.recipes || []).length, "recipe")} from the index? This can't be undone.</p>
+        <button class="btn hot" type="button" id="delyes">Remove it</button> <button class="btn ghost" type="button" id="delno">Keep it</button></div></form>`, root => {
+      const f = root.querySelector("#ebf");
+      wireIsbn(root); wireClub(root);
+      root.querySelector("#cvchg").onclick = () => coverPicker(async file => {
+        const cv = await prepareCover(file); if (!cv) return;
+        try { await saveCover(id, cv); root.querySelector(".thumb").innerHTML = coverHTML(id, b); toast("Cover saved"); } catch {} });
+      root.querySelector("#cvrm")?.addEventListener("click", async () => { await removeCover(id); root.querySelector(".thumb").innerHTML = coverHTML(id, b); });
+      f.onsubmit = async e => { e.preventDefault(); const t = f.t.value.trim(); if (!t) return;
+        const isbn = isbnValue(root);
+        const club = clubValue(root);
+        try { await writeBook(id, x => { x.title = t; x.author = f.a.value.trim(); if (isbn) x.isbn = isbn; else delete x.isbn; if (club) x.club = club; else delete x.club; }); toast("Saved"); closeSheet(); } catch {} };
+      root.querySelector("#del").onclick = () => root.querySelector("#cf").classList.add("on");
+      root.querySelector("#delno").onclick = () => root.querySelector("#cf").classList.remove("on");
+      root.querySelector("#delyes").onclick = async () => {
+        try { await writeBook(id, () => null); if (S.covers.has(id)) removeCover(id); toast("Removed"); closeSheet(); S.view = "shelf"; render(); } catch {}
+      };
+    });
+  }
+
+  // ---------- import (photos or pasted text) ----------
+  function parsePasted(text) {
+    const out = [];
+    for (let line of String(text).split(/\r?\n/)) {
+      line = line.replace(/\t/g, " ").trim(); if (!line) continue;
+      const m = line.match(/^(.*?)[\s.·•_…\-]*?\s*((?:p\.?\s*)?\d{1,4}(?:\s*[-–]\s*\d{1,4})?)\s*$/i);
+      if (!m) continue;
+      const t = m[1].replace(/[\s.·•_…\-,:]+$/, "").trim(); const p = m[2].replace(/^p\.?\s*/i, "").replace(/\s+/g, "");
+      if (t && /[a-z]/i.test(t)) out.push({ t, p });
+    }
+    return out;
+  }
+
+  const PROMPT = `These photos are pages from a cookbook: its table of contents and/or its alphabetical index.
+List every RECIPE with the page it starts on and its main ingredients.
+
+Rules:
+- Include only recipes. Skip chapter titles, essays, introductions and other non-recipe entries.
+- In an alphabetical index, recipes are nested under headings that are usually ingredients (e.g. "Squash, butternut" then indented "soup with sage, 142"). Rebuild a readable recipe title from the nested line, e.g. "Butternut Squash Soup with Sage". Use title case and keep accents.
+- The same recipe is often listed under several headings. List it ONCE and put every ingredient heading it appears under on these pages into "ingredients".
+- "ingredients": lowercase, singular, generic food words ("squash", "sage", "chicken thigh"), at most 8. Use only real ingredients; skip headings that are dish types or occasions ("soups", "weeknight", "vegetarian"), but keep an ingredient that appears inside the recipe title.
+- "source": "index" when the ingredients come from index headings printed on the page. "guess" when the page has no ingredient headings (for example a table of contents); then give your best guess at the 1 to 4 main ingredients from the title alone, or [] if the title gives no clue.
+- "page": the first page number as a string. For a range use only the first number. Unreadable: "".
+- Do not invent recipes that are not visible.
+
+Reply with only JSON in this exact shape:
+{"entries":[{"title":"Butternut Squash Soup with Sage","page":"142","ingredients":["squash","sage"],"source":"index"}]}`;
+
+  const SAMPLE_COPY = {
+    not_granted: "Photo reading wasn't allowed in this view. You can still paste a list or add recipes by hand.",
+    sampling_disabled: "Photo reading isn't available on this account. Paste a list instead.",
+    images_unavailable: "This view can't send photos. Paste a list instead.",
+    rate_limited: "Too many requests right now. Give it a minute and try again.",
+    session_expired: "You've been signed out. Sign in again and retry.",
+    image_rejected: "One of those photos couldn't be read. Try a JPEG or PNG, or a closer shot.",
+    refused: "That photo couldn't be processed. Try a different shot.",
+    invalid_json: "The reply came back garbled. Try again, or with fewer photos at once.",
+    empty_completion: "Nothing came back. Try a clearer photo.",
+  };
+
+  function openImport(bookId, mode = "photos") {
+    let files = [], entries = [], busy = null, targetBook = bookId || null;
+    const canPhoto = !!(S.sample && S.limits?.images);
+    if (!canPhoto) mode = "paste";
+    if (bookId === "__new") bookId = null, openImport.fresh = true; else openImport.fresh = false;
+    openSheet(`${head(bookId ? "Add pages" : "Import a book")}
+      <div id="step1">
+        <label class="f"><span>Book</span><select class="in" name="book">${bookOptions(bookId || (openImport.fresh ? "__new" : null))}</select></label>
+        ${newBookFieldsHTML()}
+        <div class="seg"><button type="button" data-mode="photos" ${canPhoto ? "" : "disabled"}>Photos</button><button type="button" data-mode="paste">Paste text</button></div>
+        <div data-pane="photos">
+          <label class="drop"><input type="file" accept="${esc((S.limits?.images?.mediaTypes || ["image/*"]).join(","))}" multiple>
+            <b>Choose or take photos</b><br><span style="font-size:13px">Contents pages or the recipe index at the back. One page per photo, shot square-on, works best.</span></label>
+          <div class="thumbs"></div>
+        </div>
+        <div data-pane="paste" class="hidden">
+          <label class="f"><span>One recipe per line, page at the end</span>
+          <textarea class="in" rows="8" name="paste" placeholder="Chicken Adobo ........ 112&#10;Charred Cabbage 87"></textarea></label>
+        </div>
+        <div class="status" id="st"></div>
+        <div class="actions"><button class="btn solid" id="go">Read pages</button><button class="btn ghost hidden" id="stop">Stop</button><button class="btn ghost hidden" id="bookonly">Save book only</button></div>
+        <p class="note hidden" id="bookonlynote">Don't have the book handy? Save the title, author and ISBN now and add its recipes later.</p>
+        ${canPhoto ? "" : `<p class="note">Reading photos needs Claude, which isn't available in this view. Pasting text works anywhere.</p>`}
+        <p class="note"><button type="button" class="lnk" data-sheet-act="addone">Or add one recipe by hand</button></p>
+      </div>
+      <div id="step2" class="hidden">
+        <p class="note" id="sum" style="margin-top:0"></p>
+        <ul class="review" id="rev"></ul>
+        <div class="sticky"><button class="btn hot" id="save">Add</button><button class="btn ghost" id="more">Read more pages</button><span class="status" id="st2"></span></div>
+      </div>`, root => {
+      wireBookSelect(root);
+      root.querySelector("[data-sheet-act=addone]").onclick = () => { const sel = root.querySelector("select[name=book]"); const go1 = () => openAdd(sel.value !== "__new" ? sel.value : null);
+        const m = sheetGuard && sheetGuard(); if (m) askClose({ ...m, leave: "Discard and add by hand" }, go1); else go1(); };
+      const setMode = m => { mode = m;
+        root.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m));
+        root.querySelector("[data-pane=photos]").classList.toggle("hidden", m !== "photos");
+        root.querySelector("[data-pane=paste]").classList.toggle("hidden", m !== "paste");
+        root.querySelector("#go").textContent = m === "photos" ? "Read pages" : "Check list";
+      };
+      root.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+      setMode(mode);
+
+      const st = root.querySelector("#st"), go = root.querySelector("#go"), stop = root.querySelector("#stop");
+      const fileIn = root.querySelector("[data-pane=photos] input[type=file]"), thumbs = root.querySelector(".thumbs");
+      const urls = new Map(); // file -> object URL
+      const failed = new Set();
+      const drawThumbs = () => {
+        for (const [f, u] of urls) if (!files.includes(f)) { URL.revokeObjectURL(u); urls.delete(f); }
+        thumbs.innerHTML = files.map((f, i) => { if (!urls.has(f)) urls.set(f, URL.createObjectURL(f));
+          return `<div class="th ${failed.has(f) ? "bad" : ""}"><img src="${urls.get(f)}" alt="Page ${i + 1}">${busy ? "" : `<button type="button" class="thx" data-i="${i}" aria-label="Remove page ${i + 1}">×</button>`}${failed.has(f) ? `<span>Not read</span>` : ""}</div>`; }).join("");
+      };
+      thumbs.onclick = e => { const b = e.target.closest(".thx"); if (!b || busy) return; const f = files[+b.dataset.i]; files.splice(+b.dataset.i, 1); failed.delete(f); drawThumbs();
+        st.classList.remove("err"); st.textContent = files.length ? `${plural(files.length, "photo")} ready` : ""; };
+      fileIn && (fileIn.onchange = () => {
+        files = files.concat([...fileIn.files]); fileIn.value = "";
+        drawThumbs(); st.classList.remove("err");
+        st.textContent = files.length ? `${plural(files.length, "photo")} ready` : "";
+      });
+      // ask before throwing away photos, a read in progress, or unsaved results
+      sheetGuard = () => busy ? { title: "Stop reading and close?", body: entries.length ? `${plural(entries.length, "recipe")} read so far will be lost.` : "The pages read so far will be lost.", stay: "Keep reading", leave: "Stop and close" }
+        : entries.length ? { title: "Close without saving?", body: `${plural(entries.length, "recipe")} found but not added yet.`, stay: "Keep reviewing", leave: "Discard them" }
+        : files.length ? { title: "Discard these photos?", body: `${plural(files.length, "photo")} waiting to be read.`, stay: "Keep them", leave: "Discard" } : null;
+      const bookSel = root.querySelector("select[name=book]"), bookOnly = root.querySelector("#bookonly"), bookOnlyNote = root.querySelector("#bookonlynote");
+      const syncBookOnly = () => { const n = bookSel.value === "__new"; bookOnly.classList.toggle("hidden", !n); bookOnlyNote.classList.toggle("hidden", !n); };
+      bookSel.addEventListener("change", syncBookOnly); syncBookOnly();
+      bookOnly.onclick = async () => {
+        if (busy) return;
+        bookOnly.disabled = true; st.classList.remove("err");
+        try {
+          const id = await resolveBook(root);
+          toast(`${S.books.get(id)?.title || "Book"} is on the shelf`);
+          files = []; entries = []; closeSheet(true); S.view = "book"; S.openBook = id; render(); window.scrollTo(0, 0);
+        } catch (e) { if (e?.quiet) { st.textContent = "Give the book a title first."; st.classList.add("err"); } }
+        finally { bookOnly.disabled = false; }
+      };
+
+      stop.onclick = () => busy?.abort();
+
+      go.onclick = async () => {
+        st.classList.remove("err");
+        if (mode === "paste") {
+          const got = parsePasted(root.querySelector("[name=paste]").value);
+          if (!got.length) { st.textContent = "Couldn't find any lines ending in a page number."; st.classList.add("err"); return; }
+          got.forEach(e => addEntry({ ...e, k: [], on: true }));
+          return showReview();
+        }
+        if (!files.length) { st.textContent = entries.length ? "" : "Add at least one photo first."; st.classList.toggle("err", !entries.length); if (entries.length) showReview(); return; }
+        // one page per call keeps long index pages from being cut off. A page that fails stays in the
+        // queue marked "Not read"; pages that worked leave the queue, so a retry only redoes the failures.
+        const queue = files.slice(); failed.clear();
+        go.disabled = true; bookOnly.disabled = true; stop.classList.remove("hidden"); root.querySelector("[data-mode=paste]").disabled = true;
+        busy = new AbortController(); drawThumbs();
+        let found = 0, stopped = false, fatal = null;
+        for (let i = 0; i < queue.length && !stopped && !fatal; i++) {
+          const f = queue[i], ctl = new AbortController(); busy = ctl;
+          st.classList.remove("err");
+          st.textContent = queue.length > 1 ? `Reading page ${i + 1} of ${queue.length}… (up to a minute each)` : "Reading… (this can take up to a minute)";
+          const slow = setTimeout(() => { ctl.slow = true; ctl.abort(); }, 180000); // a page that hangs counts as failed, the rest carry on
+          try {
+            const res = await S.sample.json(PROMPT, { images: [f], signal: ctl.signal });
+            const list = Array.isArray(res) ? res : (res?.entries || []);
+            let n = 0;
+            for (const e of list) {
+              const t = String(e?.title || "").trim(); if (!t) continue;
+              const k = splitKw(Array.isArray(e?.ingredients) ? e.ingredients.join(",") : "");
+              addEntry({ t, p: String(e?.page ?? "").trim(), k, ki: e?.source === "guess" && k.length > 0, on: true }); n++;
+            }
+            found += n;
+            if (n) files = files.filter(x => x !== f); else failed.add(f);
+          } catch (e) {
+            if (e?.code === "cancelled" && !ctl.slow) stopped = true;
+            else if (["not_granted", "sampling_disabled", "images_unavailable", "rate_limited", "quota_exceeded"].includes(e?.code)) { fatal = e; failed.add(f); }
+            else failed.add(f);
+          } finally { clearTimeout(slow); }
+          drawThumbs();
+        }
+        busy = null; go.disabled = false; bookOnly.disabled = false; stop.classList.add("hidden"); root.querySelector("[data-mode=paste]").disabled = false;
+        drawThumbs();
+        const left = files.length, bad = [...failed].filter(f => files.includes(f)).length;
+        if (fatal) {
+          st.textContent = SAMPLE_COPY[fatal?.code] || "Claude couldn't read the photos right now."; st.classList.add("err");
+          if (["not_granted", "sampling_disabled", "images_unavailable"].includes(fatal?.code)) { S.limits = null; setMode("paste"); root.querySelector("[data-mode=photos]").disabled = true; }
+          if (entries.length) showReview(`${plural(entries.length, "recipe")} read before it stopped. The rest of the photos are still queued.`);
+          return;
+        }
+        const tail = bad ? ` ${plural(bad, "page")} couldn't be read and ${bad === 1 ? "is" : "are"} still in the queue. Tap "Read more pages" to try ${bad === 1 ? "it" : "them"} again or remove ${bad === 1 ? "it" : "them"}.` : left ? ` ${plural(left, "page")} still in the queue.` : "";
+        if (!entries.length) { st.textContent = stopped ? "Stopped." : `Couldn't find any recipes in ${bad === 1 ? "that photo" : "those photos"}. Try a closer, straighter shot.`; st.classList.toggle("err", !stopped); return; }
+        showReview((stopped ? "Stopped. Kept what was read so far." : "") + tail);
+      };
+
+      // the same recipe shows up under several index headings, often on different photos: merge them
+      function addEntry(n) {
+        const key = recKey(n.t);
+        const m = entries.find(e => recKey(e.t) === key && (!e.p || !n.p || e.p === n.p));
+        if (!m) { entries.push(n); return; }
+        if (!m.p) m.p = n.p;
+        if (n.ki && !m.ki && m.k.length) return; // index-sourced beats a guess
+        if (!n.ki && n.k.length && m.ki) { m.k = n.k.slice(); m.ki = false; return; }
+        m.k = [...new Set(m.k.concat(n.k))].slice(0, 12);
+      }
+      function showReview(extra) {
+        // match against what's already in the chosen book
+        const sel = root.querySelector("select[name=book]");
+        const existing = sel.value !== "__new" ? S.books.get(sel.value) : null;
+        const have = new Map((existing?.recipes || []).map(r => [recKey(r.t), r]));
+        entries.forEach(e => {
+          const ex = have.get(recKey(e.t));
+          e.match = ex ? ex.id : null;
+          if (ex) { const fresh = e.k.filter(k => !(ex.k || []).includes(k)); e.newK = fresh; e.on = fresh.length > 0 && !e.ki; }
+        });
+        root.querySelector("#step1").classList.add("hidden"); root.querySelector("#step2").classList.remove("hidden");
+        drawReview();
+        const ex = root.querySelector("#st2"); ex.textContent = extra ? extra.trim() : ""; ex.classList.toggle("err", /couldn't/.test(extra || ""));
+      }
+      function drawReview() {
+        const rev = root.querySelector("#rev");
+        rev.innerHTML = entries.map((e, i) => `<li class="${e.match ? "dupe" : ""}" data-i="${i}">
+          <input type="checkbox" ${e.on ? "checked" : ""} aria-label="Include">
+          <input type="text" value="${esc(e.t)}" aria-label="Title" ${e.match ? "readonly" : ""}>
+          <input type="text" class="pg" value="${esc(e.p)}" inputmode="numeric" aria-label="Page" ${e.match ? "readonly" : ""}>
+          <button class="rm" aria-label="Remove">×</button>
+          <input type="text" class="kw ${e.ki ? "guess" : ""}" value="${esc(e.k.join(", "))}" placeholder="ingredients" aria-label="Ingredients">
+          ${e.match ? `<div class="tag">Already in this book.${e.newK?.length ? ` Checked adds: ${esc(e.newK.join(", "))}` : ""}</div>` : e.ki && e.k.length ? `<div class="tag">Ingredients guessed from the title</div>` : ""}</li>`).join("");
+        rev.querySelectorAll("li").forEach(li => {
+          const e = entries[+li.dataset.i]; const [cb, t, p, kw] = li.querySelectorAll("input");
+          cb.onchange = () => { e.on = cb.checked; count(); };
+          t.oninput = () => { e.t = t.value; }; p.oninput = () => { e.p = p.value; };
+          kw.oninput = () => { e.k = splitKw(kw.value); e.ki = false; kw.classList.remove("guess"); if (e.match) e.newK = e.k; };
+          li.querySelector(".rm").onclick = () => { entries.splice(+li.dataset.i, 1); drawReview(); };
+        });
+        count();
+      }
+      function count() {
+        const n = entries.filter(e => e.on && e.t.trim() && !e.match).length;
+        const u = entries.filter(e => e.on && e.match).length;
+        const dupes = entries.filter(e => e.match).length;
+        const guessed = entries.filter(e => e.ki && e.k.length).length;
+        const btn = root.querySelector("#save");
+        btn.textContent = n && u ? `Add ${plural(n, "recipe")}, update ${u}` : u ? `Update ${plural(u, "recipe")}` : `Add ${plural(n, "recipe")}`;
+        btn.disabled = !n && !u;
+        root.querySelector("#sum").textContent = `Found ${plural(entries.length, "recipe")}${dupes ? `, ${dupes} already in this book` : ""}${guessed ? `. Dashed ingredients are guesses` : ""}. Fix anything misread and uncheck what isn't a recipe.`;
+      }
+      root.querySelector("#more").onclick = () => {
+        root.querySelector("#step2").classList.add("hidden"); root.querySelector("#step1").classList.remove("hidden");
+        st.textContent = `${plural(entries.length, "entry", "entries")} waiting for review${files.length ? `, ${plural(files.length, "photo")} still queued` : ""}`; st.classList.remove("err");
+      };
+      root.querySelector("#save").onclick = async () => {
+        const st2 = root.querySelector("#st2"), btn = root.querySelector("#save");
+        const keep = entries.filter(e => e.on && e.t.trim() && !e.match).map(e => {
+          const r = { id: rid(), t: e.t.trim(), p: e.p.trim(), k: e.k }; if (e.ki && e.k.length) r.ki = true; return r; });
+        const updates = new Map(entries.filter(e => e.on && e.match).map(e => [e.match, e]));
+        btn.disabled = true; st2.textContent = "Saving…";
+        try {
+          let id;
+          try { id = await resolveBook(root); }
+          catch (e) { if (e?.quiet) { root.querySelector("#more").click(); st.textContent = "Give the new book a title first."; st.classList.add("err"); } btn.disabled = false; st2.textContent = ""; return; }
+          await writeBook(id, b => {
+            b.recipes = (b.recipes || []).map(r => {
+              const e = updates.get(r.id); if (!e) return r;
+              const k = e.ki ? (r.k || []) : [...new Set((r.ki ? [] : (r.k || [])).concat(e.k))].slice(0, 12);
+              const out = { ...r, k }; if (!e.ki) delete out.ki; if (!out.p && e.p) out.p = e.p; return out;
+            }).concat(keep);
+          });
+          toast(keep.length ? `${plural(keep.length, "recipe")} added to ${S.books.get(id)?.title}` : `${plural(updates.size, "recipe")} updated`);
+          if (keep.length && canSee()) suggestTags(id, keep.map(k => k.id)).then(n => n && toast(`Suggested tags for ${plural(n, "recipe")}`)).catch(() => {});
+          entries = []; files = []; closeSheet(true); S.view = "book"; S.openBook = id; render(); window.scrollTo(0, 0);
+        } catch { btn.disabled = false; st2.textContent = ""; }
+      };
+      return () => { busy?.abort(); urls.forEach(URL.revokeObjectURL); };
+    });
+  }
+
+  // ---------- events ----------
+  q.addEventListener("input", () => { if (S.view !== "search") S.view = "search"; render(); });
+  $("#clearq").onclick = () => { q.value = ""; q.focus(); render(); };
+  $("#homeBtn").onclick = e => { e.preventDefault(); q.value = ""; S.openBook = null; go("search"); };
+  $("#tab-search").onclick = () => { S.view = "search"; render(); q.focus(); };
+  $("#tab-shelf").onclick = () => { S.view = "shelf"; render(); };
+  $("#tab-plan").onclick = () => { if (S.view !== "plan") S.planWeek = weekOf(todayKey()); S.view = "plan"; render(); window.scrollTo(0, 0); };
+  // + opens a new-book import; inside a book it adds pages to that book
+  $("#fab").onclick = () => S.view === "plan" ? openPlanPicker(weekOf(todayKey()) === (S.planWeek || weekOf(todayKey())) ? todayKey() : S.planWeek) : S.view === "book" && S.books.has(S.openBook) ? openImport(S.openBook, "photos") : openImport("__new", "photos");
+  // theme: Auto follows the phone, Light and Dark override it (set on the Settings screen)
+  const applyTheme = m => { if (m === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = m; };
+  let theme = "auto"; try { theme = localStorage.getItem("ci-theme") || "auto"; } catch {}
+  applyTheme(theme);
+  $("#settingsBtn").onclick = () => { if (S.view !== "settings") S.prevView = { view: S.view, openBook: S.openBook, openRecipe: S.openRecipe }; S.view = "settings"; render(); window.scrollTo(0, 0); };
+  main.addEventListener("click", e => {
+    const act = e.target.closest("[data-act]");
+    if (act) {
+      const a = act.dataset.act;
+      if (a === "import") openImport(act.dataset.book || null, "photos");
+      else if (a === "add") openAdd(act.dataset.book || null, act.dataset.prefill);
+      else if (a === "editbook") openEditBook(act.dataset.book);
+      else if (a === "cover") { if (S.covers.has(act.dataset.book)) openEditBook(act.dataset.book); else openCover(act.dataset.book); }
+      else if (a === "shelf") { S.view = "shelf"; render(); }
+      else if (a === "bq-clear") { S.bookQ = ""; const el = main.querySelector("#bq"); if (el) { el.value = ""; el.dispatchEvent(new Event("input")); el.focus(); } }
+      else if (a === "mode") { S.shelfMode = act.dataset.v; render(); }
+      else if (a === "back") { const bk = S.back || { view: "book", openBook: S.openBook }; Object.assign(S, bk); render(); window.scrollTo(0, 0); }
+      else if (a === "openbook") go("book");
+      else if (a === "rate-book") { const v = +act.dataset.v; writeBook(S.openBook, b => { b.rating = b.rating === v ? 0 : v; }).catch(() => {}); }
+      else if (a === "rate") { const v = +act.dataset.v; updRecipe(S.openBook, S.openRecipe, r => { r.rate = r.rate === v ? 0 : v; }); }
+      else if (a === "cooked") openCookFlow(S.openBook, S.openRecipe);
+      else if (a === "plan-recipe") { const b = S.openBook, r = S.openRecipe; openDaySheet("Add to the meal plan", null, d => planAdd({ day: d, kind: "recipe", b, r })); }
+      else if (a === "wk") { const v = +act.dataset.v; S.planWeek = v ? addDays(S.planWeek || weekOf(todayKey()), 7 * v) : weekOf(todayKey()); render(); }
+      else if (a === "plan-add") openPlanPicker(act.dataset.day);
+      else if (a === "plan-open") go("recipe", { openBook: act.dataset.b, openRecipe: act.dataset.r });
+      else if (a === "plan-menu") openEntryMenu(act.dataset.id);
+      else if (a === "made-yes") answerMade(act.dataset.id, true);
+      else if (a === "made-no") answerMade(act.dataset.id, false);
+      else if (a === "plan-move") { const e = planFind(act.dataset.id); if (e) openDaySheet("Move to…", e.day, d => planMove(e.id, d)); }
+      else if (a === "q-up") { const i = +act.dataset.v; const l = quickTypes().map(x => ({ ...x })); if (i > 0) { [l[i - 1], l[i]] = [l[i], l[i - 1]]; saveQuick(l); } }
+      else if (a === "q-rm") { const i = +act.dataset.v; const l = quickTypes().map(x => ({ ...x })); if (l.length > 1) { l.splice(i, 1); saveQuick(l); } else toast("Keep at least one"); }
+      else if (a === "q-add") { const l = quickTypes().map(x => ({ ...x })); const pal = ["#ffc94a", "#5a4df5", "#ff876d", "#3dbe8b", "#2f9bff", "#e85d9b", "#111214"]; l.push({ id: rid8(), label: "New entry", color: pal[l.length % pal.length] }); saveQuick(l); }
+      else if (a === "to-tags") document.getElementById("tags")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      else if (a === "note-rm") removeNote(S.openBook, S.openRecipe, act.dataset.v, act.dataset.priv === "1");
+      else if (a === "photo-rm") { const id = S.openRecipe; S.photos.delete(id); updRecipe(S.openBook, id, r => { delete r.ph; delete r.tone; }); S.db.doc("photos/" + id).delete().catch(() => {}); }
+      else if (a === "theme") { theme = act.dataset.v; applyTheme(theme); try { localStorage.setItem("ci-theme", theme); } catch {} render(); }
+      else if (a === "export-prep") exportPrep();
+      else if (a === "export-copy") { const box = document.getElementById("exportbox"); box.select(); let ok = false; try { navigator.clipboard.writeText(S.exportText).then(() => { const st = document.getElementById("exportst"); if (st) st.textContent = "Copied. Paste it into the new version's Settings."; }, () => { ok = document.execCommand("copy"); }); } catch { ok = document.execCommand("copy"); } }
+      else if (a === "settings-back") { Object.assign(S, S.prevView || { view: "search" }); render(); window.scrollTo(0, 0); }
+      else if (a === "uncook") updRecipe(S.openBook, S.openRecipe, r => { r.cooked = (r.cooked || []).slice(0, -1); });
+      else if (a === "fav") updRecipe(S.openBook, S.openRecipe, r => { r.fav = !r.fav; });
+      else if (a === "tag-ok") { const v = act.dataset.v; updRecipe(S.openBook, S.openRecipe, r => { r.tags = [...new Set([...(r.tags || []), v])]; r.tagsG = (r.tagsG || []).filter(t => t !== v); }); }
+      else if (a === "tag-rm") { const v = act.dataset.v; updRecipe(S.openBook, S.openRecipe, r => { r.tags = (r.tags || []).filter(t => t !== v); r.tagsG = (r.tagsG || []).filter(t => t !== v); r.tagsX = [...new Set([...(r.tagsX || []), v])]; }); }
+      else if (a === "tag-go") { q.value = act.dataset.v; go("search"); }
+      else if (a === "editrecipe") openAdd(S.openBook, null, S.openRecipe);
+      else if (a === "recipe-photo") { const bid = S.openBook, rid2 = S.openRecipe; const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = () => { if (inp.files.length) readRecipePhoto(bid, rid2, inp.files); }; inp.click(); }
+      else if (a === "suggest-tags") {
+        const bid = act.dataset.book; act.disabled = true; const st = document.getElementById("bkst"); if (st) st.textContent = "Suggesting tags… (about a minute per 60 recipes)";
+        suggestTags(bid).then(n => toast(n ? `Suggested tags for ${plural(n, "recipe")}` : "No new tags to suggest")).catch(e => toast(SAMPLE_COPY[e?.code] || "Couldn't suggest tags right now")).finally(() => { const el = document.getElementById("bkst"); if (el) el.textContent = ""; });
+      }
+      return;
+    }
+    const open = e.target.closest("[data-open]");
+    if (open) { if (S.openBook !== open.dataset.open) S.bookQ = ""; S.view = "book"; S.openBook = open.dataset.open; render(); window.scrollTo(0, 0); return; }
+    const row = e.target.closest(".row");
+    if (row) go("recipe", { openBook: row.dataset.book, openRecipe: row.dataset.rid });
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && sheet.classList.contains("on")) closeSheet();
+    if (e.key === "/" && document.activeElement === document.body) { e.preventDefault(); q.focus(); }
+  });
+
+  // ---------- boot ----------
+  render();
+  (async () => {
+    if (!window.claude?.use) { S.loaded = true; banner("Open this from its claude.ai link to load the shared index."); render(); return; }
+    const [db, user, sample] = await Promise.all([claude.use("db"), claude.use("user").catch(() => null), claude.use("sample").catch(() => null)]);
+    if (!db) { S.loaded = true; banner("Sign in to claude.ai to see the shared index."); render(); return; }
+    S.db = db; S.sample = sample;
+    if (sample) S.limits = await sample.limits().catch(() => null);
+    try { const w = user ? await user.can("data.write") : null; if (w === false) S.canWrite = false; } catch {}
+    S.user = user;
+    try { S.uid = user ? await user.id() : null; S.isOwner = user ? !!(await user.isOwner()) : false; } catch { S.uid = null; }
+    if (S.uid) db.doc(`data/users/${S.uid}/recent`).onSnapshot(d => { const v = d.exists ? d.data().v : null; if (Array.isArray(v)) { S.recent = v.filter(x => x && x.b && x.r).slice(0, 20); render(); } }, () => {});
+    else { try { S.recent = JSON.parse(localStorage.getItem("ci-recent") || "[]"); } catch {} }
+    db.collection("plan").onSnapshot(snap => {
+      S.plan = new Map(snap.docs.filter(d => d.exists && /^\d{4}-\d\d-\d\d$/.test(d.id)).map(d => [d.id, Array.isArray(d.data().entries) ? d.data().entries : []]));
+      render();
+    }, () => {});
+    db.doc("meta/plan").onSnapshot(d => { const v = d.exists ? d.data().quick : null; S.quick = Array.isArray(v) && v.length ? v : null; render(); }, () => {});
+    if (S.uid) db.doc(`data/users/${S.uid}/notes`).onSnapshot(d => { S.myNotes = d.exists ? (d.data().r || {}) : {}; render(); }, () => {});
+    const timer = setTimeout(() => { if (!S.loaded) { S.loaded = true; render(); } banner("Can't reach the index yet. It will fill in once the connection comes back."); }, 10000);
+    try { S.shelfSort = localStorage.getItem("ci-sort") || "title"; } catch {}
+    db.collection("covers").onSnapshot(snap => {
+      S.covers = new Map(snap.docs.filter(d => d.exists && /^data:image\/(jpeg|png|webp);base64,/.test(String(d.data().src || ""))).map(d => [d.id, d.data().src]));
+      render();
+    }, () => {});
+    db.collection("books").onSnapshot(snap => {
+      S.books = new Map(snap.docs.filter(d => d.exists).map(d => [d.id, d.data()]));
+      if (!snap.metadata.fromCache) { clearTimeout(timer); banner(""); }
+      S.loaded = true; render();
+    }, err => {
+      clearTimeout(timer); S.loaded = true;
+      banner(err?.code === "revoked" ? "This page no longer has access to the index." : "Lost the connection to the index. Reload to reconnect.");
+      render();
+    });
+  })();
+})();
+</script>
+</body>
+</html>
