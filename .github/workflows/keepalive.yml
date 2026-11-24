@@ -1,0 +1,35 @@
+# Keeps the free Supabase project from pausing after a quiet week.
+# Every 3 days it runs one small read against the database. Row level
+# security means it gets back an empty list, but the query still counts
+# as activity. The publishable key is the same public one cc-port.js uses.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 14 */3 * *"   # every 3 days, 9:17am Eastern (14:17 UTC)
+  workflow_dispatch: {}       # "Run workflow" button for a manual test
+
+permissions:
+  actions: write              # lets the last step reset GitHub's 60-day idle timer
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query the database
+        env:
+          SB_URL: https://vdcvbtpikgcjfsuhxuyw.supabase.co
+          SB_KEY: sb_publishable_1jBMbLTfrHax70HZv0E-Lw_Z039fpS7
+        run: |
+          code=$(curl -s -o body.txt -w '%{http_code}' \
+            -H "apikey: $SB_KEY" \
+            "$SB_URL/rest/v1/households?select=id&limit=1")
+          echo "HTTP $code: $(cat body.txt)"
+          test "$code" -ge 200 && test "$code" -lt 300
+
+      # GitHub switches off scheduled workflows in public repos after 60 days
+      # with no commits. Re-enabling this workflow through the API resets that.
+      - name: Keep this schedule switched on
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/keepalive.yml/enable"
